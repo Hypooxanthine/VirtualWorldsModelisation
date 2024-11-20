@@ -3,6 +3,7 @@
 #include <vector>
 
 #include <Vroom/Render/Abstraction/Texture2D.h>
+#include <Vroom/Asset/AssetData/MeshData.h>
 
 #include <glm/glm.hpp>
 
@@ -10,7 +11,7 @@ class ScalarField
 {
 public:
     inline constexpr ScalarField() {}
-    inline constexpr ScalarField(size_t width, size_t height) : m_Width(width), m_Height(height), m_Data(width * height, 0.5f) {}
+    inline constexpr ScalarField(size_t width, size_t height) : m_Width(width), m_Height(height), m_Data(width * height, 0.f) {}
 
     void setFromTexture(const vrm::Texture2D& texture);
     vrm::Texture2D toTexture(float min, float max) const;
@@ -18,8 +19,8 @@ public:
     inline constexpr glm::vec2 getGradient(size_t x, size_t y) const;
     inline constexpr glm::vec2 getGradient(size_t i) const { return getGradient(xCoord(i), yCoord(i)); }
 
-    inline constexpr float getGradientNorm(size_t x, size_t y) const { return glm::length(getGradient(x, y)); }
-    inline constexpr float getGradientNorm(size_t i) const { return getGradientNorm(xCoord(i), yCoord(i)); }
+    inline float getGradientNorm(size_t x, size_t y) const { return glm::length(getGradient(x, y)); }
+    inline float getGradientNorm(size_t i) const { return getGradientNorm(xCoord(i), yCoord(i)); }
     inline constexpr ScalarField getGradientNormScalarField() const;
 
     inline constexpr float getLaplacian(size_t x, size_t y, float h = 1.f) const;

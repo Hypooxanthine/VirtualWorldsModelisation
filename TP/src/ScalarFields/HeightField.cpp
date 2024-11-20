@@ -19,3 +19,40 @@ float HeightField::getAverageSlope(size_t x, size_t y) const
 
     return slope / count;
 }
+
+vrm::MeshData HeightField::toMeshData(float scale) const
+{
+    std::vector<vrm::Vertex> vertices;
+    std::vector<uint32_t> indices;
+
+    for (size_t y = 0; y < getSizeY(); ++y)
+    {
+        for (size_t x = 0; x < getSizeX(); ++x)
+        {
+            vertices.push_back({
+                glm::vec3(
+                    static_cast<float>(x) / getSizeX() - .5f,
+                    getHeight(x, y),
+                    static_cast<float>(y) / getSizeY() - .5f
+                ) * scale,
+                glm::vec3(0.f, 1.f, 0.f)
+            });
+        }
+    }
+
+    for (size_t y = 0; y < getSizeY()- 1; ++y)
+    {
+        for (size_t x = 0; x < getSizeX() - 1; ++x)
+        {
+            indices.push_back(index(x, y));
+            indices.push_back(index(x + 1, y + 1));
+            indices.push_back(index(x + 1, y));
+
+            indices.push_back(index(x, y));
+            indices.push_back(index(x, y + 1));
+            indices.push_back(index(x + 1, y + 1));
+        }
+    }
+
+    return { vertices, indices };
+}

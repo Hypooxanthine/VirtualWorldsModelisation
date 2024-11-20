@@ -92,11 +92,13 @@ void UILayer::onUpdate(float dt)
     {
         app.getWindow().setCursorVisible(false);
         app.getGameLayer().setShouldHandleEvents(true);
+        app.getGameLayer().setShouldUpdate(true);
     }
     else
     {
         app.getWindow().setCursorVisible(true);
         app.getGameLayer().setShouldHandleEvents(false);
+        app.getGameLayer().setShouldUpdate(false);
     }
 }
 

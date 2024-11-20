@@ -16,7 +16,10 @@ void DetailsPanel::onImgui()
 {
     ImGui::Begin("Details panel");
 
-    
+    if (ImGui::Button("Update mesh"))
+    {
+        m_Scene->updateMesh();
+    }
 
     ImGui::End();
 }

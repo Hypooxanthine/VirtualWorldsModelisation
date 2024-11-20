@@ -8,6 +8,8 @@ public:
     inline constexpr HeightField() {}
     inline constexpr HeightField(size_t width, size_t height) : ScalarField(width, height) {}
 
+    vrm::MeshData toMeshData(float scale = 1.f) const;
+
     inline float getSlope(size_t x, size_t y) const { return ScalarField::getGradientNorm(x, y); }
     inline float getSlope(size_t i) const { return ScalarField::getGradientNorm(i); }
     inline ScalarField getSlopeScalarField() const { return ScalarField::getGradientNormScalarField(); }
