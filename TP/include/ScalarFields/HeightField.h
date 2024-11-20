@@ -8,13 +8,13 @@ public:
     inline constexpr HeightField() {}
     inline constexpr HeightField(size_t width, size_t height) : ScalarField(width, height) {}
 
-    inline float getSlope(size_t x, size_t y) const
-    {
-        glm::vec2 grad = getGradient(x, y);
-        return glm::length(grad);
-    }
+    inline float getSlope(size_t x, size_t y) const { return ScalarField::getGradientNorm(x, y); }
+    inline float getSlope(size_t i) const { return ScalarField::getGradientNorm(i); }
+    inline ScalarField getSlopeScalarField() const { return ScalarField::getGradientNormScalarField(); }
 
     float getAverageSlope(size_t x, size_t y) const;
+    inline float getAverageSlope(size_t i) const { return getAverageSlope(xCoord(i), yCoord(i)); }
+    inline ScalarField getAverageSlopeScalarField() const;
 
     size_t getWidth() const = delete;
     inline constexpr size_t getSizeX() const { return ScalarField::getWidth(); }
@@ -32,3 +32,18 @@ public:
     inline constexpr void setHeight(size_t i, float height) { ScalarField::setValue(i, height); }
     inline constexpr void setHeight(size_t x, size_t y, float height) { ScalarField::setValue(x, y, height); }
 };
+
+inline ScalarField HeightField::getAverageSlopeScalarField() const
+{
+    ScalarField averageSlopeField(getSizeX(), getSizeY());
+
+    for (size_t y = 0; y < getSizeY(); ++y)
+    {
+        for (size_t x = 0; x < getSizeX(); ++x)
+        {
+            averageSlopeField.setValue(x, y, getAverageSlope(x, y));
+        }
+    }
+
+    return averageSlopeField;
+}
