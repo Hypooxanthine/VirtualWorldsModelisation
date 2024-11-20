@@ -2,16 +2,6 @@
 
 #include <Vroom/Core/Assert.h>
 
-ScalarField::ScalarField()
-{
-
-}
-
-ScalarField::ScalarField(size_t width, size_t height)
-    : m_Width(width), m_Height(height), m_Data(width * height, 0.5f)
-{
-}
-
 void ScalarField::setFromTexture(const vrm::Texture2D& texture)
 {
     VRM_ASSERT_MSG(texture.getFormat() == vrm::Texture2D::Format::Grayscale, "ScalarField: Texture format must be Grayscale.");
