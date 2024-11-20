@@ -3,6 +3,7 @@
 #include <Vroom/Scene/Scene.h>
 #include <Vroom/Asset/StaticAsset/MeshAsset.h>
 #include <Vroom/Render/Camera/FirstPersonCamera.h>
+#include <Vroom/Scene/Components/PointLightComponent.h>
 #include <glm/gtc/constants.hpp>
 
 #include "ScalarFields/HeightField.h"
@@ -20,6 +21,8 @@ public:
 
     void updateMesh();
 
+    vrm::PointLightComponent& getLightComponent() { return *m_LightComponent; }
+
 private:
     HeightField m_HeightField;
     vrm::MeshAsset m_MeshAsset;
@@ -29,4 +32,7 @@ private:
     float forwardValue = 0.f, rightValue = 0.f, upValue = 0.f;
 	float turnRightValue = 0.f, lookUpValue = 0.f;
 	float myCameraSpeed = 10.f, myCameraAngularSpeed = .08f * glm::two_pi<float>() / 360.f;
+
+    // Light params
+    vrm::PointLightComponent* m_LightComponent = nullptr;
 };

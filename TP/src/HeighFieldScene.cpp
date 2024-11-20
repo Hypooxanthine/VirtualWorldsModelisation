@@ -3,9 +3,10 @@
 #include <Vroom/Core/Application.h>
 #include <Vroom/Core/GameLayer.h>
 #include <Vroom/Scene/Components/MeshComponent.h>
+#include <Vroom/Scene/Components/TransformComponent.h>
 
 HeightFieldScene::HeightFieldScene()
-    : m_HeightField(100, 100), m_Camera(0.1f, 100.f, glm::radians(90.f), 0.f, { 0.f, 100.f, 0.f }, { glm::radians(90.f), 0.f, 0.f })
+    : m_HeightField(), m_Camera(0.1f, 100.f, glm::radians(90.f), 0.f, { 0.f, 10.f, 0.f }, { glm::radians(90.f), 0.f, 0.f })
 {
     // Events
     auto& gameLayer = vrm::Application::Get().getGameLayer();
@@ -36,6 +37,11 @@ HeightFieldScene::HeightFieldScene()
             turnRightValue += static_cast<float>(event.mouseDeltaX);
             lookUpValue -= static_cast<float>(event.mouseDeltaY);
         });
+
+    // Heigh field setup
+    vrm::Texture2D tex;
+    VRM_ASSERT(tex.loadFromFile("Resources/Textures/great_lakes.jpg"));
+    m_HeightField.setFromTexture(tex);
 }
 
 HeightFieldScene::~HeightFieldScene()
@@ -50,6 +56,14 @@ void HeightFieldScene::onInit()
     // Entities
     auto meshEntity = createEntity("HeightField");
     meshEntity.addComponent<vrm::MeshComponent>(m_MeshAsset.createInstance());
+
+    auto lightEntity = createEntity("Light");
+        auto& lightTransform = lightEntity.getComponent<vrm::TransformComponent>();
+            lightTransform.setPosition({0.f, 100.f, 0.f});
+        m_LightComponent = &lightEntity.addComponent<vrm::PointLightComponent>();
+            m_LightComponent->color = glm::vec3{1.f};
+            m_LightComponent->intensity = 4'000.f;
+            m_LightComponent->radius = 10'000.f;
 
     updateMesh();
 }
@@ -69,9 +83,6 @@ void HeightFieldScene::onUpdate(float dt)
 
     lookUpValue = 0.f;
     turnRightValue = 0.f;
-
-    VRM_LOG_INFO("Camera position: {0}, {1}, {2}", m_Camera.getPosition().x, m_Camera.getPosition().y, m_Camera.getPosition().z);
-    VRM_LOG_INFO("Camera rotation: {0}, {1}, {2}", glm::degrees(m_Camera.getRotation().x), glm::degrees(m_Camera.getRotation().y), glm::degrees(m_Camera.getRotation().z));
 }
 
 void HeightFieldScene::onRender()
@@ -81,6 +92,6 @@ void HeightFieldScene::onRender()
 void HeightFieldScene::updateMesh()
 {
     m_MeshAsset.clear();
-    m_MeshAsset.addSubmesh(m_HeightField.toMeshData(100.f));
+    m_MeshAsset.addSubmesh(m_HeightField.toMeshData(10.f));
     VRM_LOG_INFO("Mesh updated");
 }

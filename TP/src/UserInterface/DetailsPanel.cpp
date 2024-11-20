@@ -21,6 +21,8 @@ void DetailsPanel::onImgui()
         m_Scene->updateMesh();
     }
 
+    ImGui::SliderFloat("Light intensity", &m_Scene->getLightComponent().intensity, 0.f, 1'000'000'000.f, "%.1f", ImGuiSliderFlags_Logarithmic);
+
     ImGui::End();
 }
 

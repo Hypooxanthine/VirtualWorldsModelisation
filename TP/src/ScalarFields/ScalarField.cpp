@@ -4,17 +4,22 @@
 
 void ScalarField::setFromTexture(const vrm::Texture2D& texture)
 {
-    VRM_ASSERT_MSG(texture.getFormat() == vrm::Texture2D::Format::Grayscale, "ScalarField: Texture format must be Grayscale.");
+    if (texture.getFormat() != vrm::Texture2D::Format::Grayscale)
+    {
+        VRM_LOG_WARN("ScalarField: Format isn't Grayscale, only red channel will be used.");
+    }
 
     m_Width = texture.getWidth();
     m_Height = texture.getHeight();
     m_Data.resize(m_Width * m_Height);
 
     std::vector<unsigned char> pixels = texture.getData();
-    
-    for (size_t i = 0; i < m_Data.size(); i++)
+
+    VRM_LOG_TRACE("ScalarField: Texture size: {}x{}, bpp: {}", m_Width, m_Height, texture.getBPP());
+
+    for (size_t i = 0; i < m_Width * m_Height; i++)
     {
-        m_Data[i] = static_cast<float>(pixels[i] / 255.0f);
+        m_Data[i] = static_cast<float>(pixels[i * texture.getBPP()]);
     }
 }
 
