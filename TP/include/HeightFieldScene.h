@@ -2,6 +2,8 @@
 
 #include <Vroom/Scene/Scene.h>
 
+#include "ScalarFields/ScalarField.h"
+
 class HeightFieldScene final : public vrm::Scene
 {
 public:
@@ -13,5 +15,6 @@ public:
     void onUpdate(float dt) override;
     void onRender() override;
 
-    void onImgui();
+private:
+    ScalarField m_ScalarField;
 };

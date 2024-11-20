@@ -12,6 +12,11 @@ ImGuiElement::~ImGuiElement()
 {
 }
 
+void ImGuiElement::init()
+{
+    onInit();
+}
+
 void ImGuiElement::renderImgui()
 {
     onImgui();

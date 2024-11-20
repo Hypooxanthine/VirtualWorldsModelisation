@@ -52,6 +52,12 @@ void UILayer::onInit()
 
     // Framebuffer management (viewport)
     m_Viewport.setFrameBuffer(&app.getGameLayer().getFrameBuffer());
+
+    // UI setup
+    m_MainMenuBar.init();
+    m_StatisticsPanel.init();
+    m_Viewport.init();
+    m_DetailsPanel.init();
 }
 
 void UILayer::onEnd()
@@ -121,6 +127,7 @@ void UILayer::onImgui()
     m_MainMenuBar.renderImgui();
     m_StatisticsPanel.renderImgui();
     m_Viewport.renderImgui();
+    m_DetailsPanel.renderImgui();
 
     ImGui::PopFont();
 

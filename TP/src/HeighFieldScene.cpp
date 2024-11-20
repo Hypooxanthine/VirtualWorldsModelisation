@@ -3,6 +3,7 @@
 #include <Vroom/Core/Application.h>
 
 HeightFieldScene::HeightFieldScene()
+    : m_ScalarField(100, 100)
 {
 }
 

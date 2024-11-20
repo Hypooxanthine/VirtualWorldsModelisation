@@ -9,6 +9,7 @@
 #include "UserInterface/MainMenuBar.h"
 #include "UserInterface/StatisticsPanel.h"
 #include "UserInterface/Viewport.h"
+#include "UserInterface/DetailsPanel.h"
 
 class UILayer final : public vrm::Layer
 {
@@ -34,4 +35,5 @@ private:
     MainMenuBar m_MainMenuBar;
     StatisticsPanel m_StatisticsPanel;
     Viewport m_Viewport;
+    DetailsPanel m_DetailsPanel;
 };

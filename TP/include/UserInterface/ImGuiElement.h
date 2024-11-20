@@ -8,9 +8,11 @@ public:
     ImGuiElement();
     ~ImGuiElement();
 
+    void init();
     void renderImgui();
 
 protected:
+    virtual void onInit() {}
     virtual void onImgui() = 0;
     void notImplemented();
 
