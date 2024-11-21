@@ -3,7 +3,6 @@
 #include <Vroom/Core/Application.h>
 #include <Vroom/Core/GameLayer.h>
 #include <Vroom/Scene/Components/MeshComponent.h>
-#include <Vroom/Scene/Components/TransformComponent.h>
 
 HeightFieldScene::HeightFieldScene()
     : m_HeightField(), m_Camera(0.1f, 100.f, glm::radians(90.f), 0.f, { 0.f, 10.f, 0.f }, { glm::radians(90.f), 0.f, 0.f })
@@ -40,7 +39,7 @@ HeightFieldScene::HeightFieldScene()
 
     // Heigh field setup
     vrm::Texture2D tex;
-    VRM_ASSERT(tex.loadFromFile("Resources/Textures/great_lakes.jpg"));
+    VRM_ASSERT_MSG(tex.loadFromFile("Resources/Textures/great_lakes.jpg"), "Failed to load texture");
     m_HeightField.setFromTexture(tex);
 }
 
@@ -56,10 +55,11 @@ void HeightFieldScene::onInit()
     // Entities
     auto meshEntity = createEntity("HeightField");
     meshEntity.addComponent<vrm::MeshComponent>(m_MeshAsset.createInstance());
+    m_MeshTransform = &meshEntity.getComponent<vrm::TransformComponent>();
 
     auto lightEntity = createEntity("Light");
-        auto& lightTransform = lightEntity.getComponent<vrm::TransformComponent>();
-            lightTransform.setPosition({0.f, 100.f, 0.f});
+        m_LightTransform = &lightEntity.getComponent<vrm::TransformComponent>();
+            m_LightTransform->setPosition({0.f, 100.f, 0.f});
         m_LightComponent = &lightEntity.addComponent<vrm::PointLightComponent>();
             m_LightComponent->color = glm::vec3{1.f};
             m_LightComponent->intensity = 4'000.f;

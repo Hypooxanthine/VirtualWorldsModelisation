@@ -36,10 +36,10 @@ vrm::MeshData HeightField::toMeshData(float scale) const
         {
             vertices.push_back({
                 glm::vec3(
-                    (static_cast<float>(x) - sizeX / 2.f),
+                    static_cast<float>(x),
                     getHeight(x, y),
-                    (static_cast<float>(y) - sizeY / 2.f)
-                ) * scale / minSize,
+                    static_cast<float>(y)
+                ),
                 glm::vec3(0.f, 1.f, 0.f)
             });
         }

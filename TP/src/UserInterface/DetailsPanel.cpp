@@ -21,8 +21,19 @@ void DetailsPanel::onImgui()
         m_Scene->updateMesh();
     }
 
+    ImGui::TextWrapped("Light transform");
+    auto lightPos = m_Scene->getLightTransform().getPosition();
+    if (ImGui::SliderFloat3("##Light position", &lightPos.x, -100.f, 100.f, "%.1f"))
+        m_Scene->getLightTransform().setPosition(lightPos);
     ImGui::TextWrapped("Light intensity");
     ImGui::SliderFloat("##Light intensity", &m_Scene->getLightComponent().intensity, 0.f, 1'000'000'000.f, "%.1f", ImGuiSliderFlags_Logarithmic);
+    ImGui::TextWrapped("Light color");
+    ImGui::SliderFloat3("##Light color", &m_Scene->getLightComponent().color.x, 0.f, 1.f, "%.01f");
+
+    auto scale = m_Scene->getMeshTransform().getScale();
+    ImGui::TextWrapped("Scale");
+    if (ImGui::SliderFloat3("##Scale", &scale.x, 0.01f, 1.f, "%.3f"))
+        m_Scene->getMeshTransform().setScale(scale);
 
     ImGui::End();
 }

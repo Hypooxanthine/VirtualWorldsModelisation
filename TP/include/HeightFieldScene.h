@@ -4,6 +4,7 @@
 #include <Vroom/Asset/StaticAsset/MeshAsset.h>
 #include <Vroom/Render/Camera/FirstPersonCamera.h>
 #include <Vroom/Scene/Components/PointLightComponent.h>
+#include <Vroom/Scene/Components/TransformComponent.h>
 #include <glm/gtc/constants.hpp>
 
 #include "ScalarFields/HeightField.h"
@@ -21,11 +22,14 @@ public:
 
     void updateMesh();
 
-    vrm::PointLightComponent& getLightComponent() { return *m_LightComponent; }
+    inline vrm::TransformComponent& getMeshTransform() { return *m_MeshTransform; }
+    inline vrm::PointLightComponent& getLightComponent() { return *m_LightComponent; }
+    inline vrm::TransformComponent& getLightTransform() { return *m_LightTransform; }
 
 private:
     HeightField m_HeightField;
     vrm::MeshAsset m_MeshAsset;
+    vrm::TransformComponent* m_MeshTransform = nullptr;
 
     // Camera params
     vrm::FirstPersonCamera m_Camera;
@@ -35,4 +39,5 @@ private:
 
     // Light params
     vrm::PointLightComponent* m_LightComponent = nullptr;
+    vrm::TransformComponent* m_LightTransform = nullptr;
 };
