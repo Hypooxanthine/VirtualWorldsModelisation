@@ -15,6 +15,7 @@ public:
 
     void setFromTexture(const vrm::Texture2D& texture);
     vrm::Texture2D toTexture(float min, float max) const;
+    vrm::Texture2D toTexture() const { return toTexture(0.f, getMax()); }
 
     inline constexpr glm::vec2 getGradient(size_t x, size_t y) const;
     inline constexpr glm::vec2 getGradient(size_t i) const { return getGradient(xCoord(i), yCoord(i)); }
@@ -36,6 +37,8 @@ public:
 
     inline constexpr float getValue(size_t i) const { return m_Data[i]; }
     inline constexpr float getValue(size_t x, size_t y) const { return getValue(index(x, y)); }
+
+    inline constexpr float getMax() const;
 
     inline constexpr size_t getWidth() const { return m_Width; }
     inline constexpr size_t getHeight() const { return m_Height; }
@@ -103,4 +106,9 @@ inline constexpr ScalarField ScalarField::getLaplacianScalarField(float h) const
     }
 
     return laplacian;
+}
+
+inline constexpr float ScalarField::getMax() const
+{
+    return *std::max_element(m_Data.begin(), m_Data.end());
 }

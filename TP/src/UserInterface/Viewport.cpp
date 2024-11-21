@@ -17,10 +17,10 @@ Viewport::~Viewport()
 void Viewport::onImgui()
 {
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    if (ImGui::Begin("Viewport"))
+    ImGui::Begin("Viewport");
     {    
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-        if (ImGui::BeginChildFrame(ImGui::GetID("ViewportFrame"), ImVec2(0, 0), ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse))
+        ImGui::BeginChildFrame(ImGui::GetID("ViewportFrame"), ImVec2(0, 0), ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
         {
             auto size = ImGui::GetContentRegionAvail();
 
@@ -48,6 +48,7 @@ void Viewport::onImgui()
 
             ImGui::EndChildFrame();
         }
+        
         ImGui::PopStyleVar();
     
         ImGui::End();

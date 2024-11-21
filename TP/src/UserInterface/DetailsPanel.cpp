@@ -12,32 +12,6 @@ DetailsPanel::DetailsPanel()
 {
 }
 
-void DetailsPanel::onImgui()
-{
-    ImGui::Begin("Details panel");
-
-    if (ImGui::Button("Update mesh"))
-    {
-        m_Scene->updateMesh();
-    }
-
-    ImGui::TextWrapped("Light transform");
-    auto lightPos = m_Scene->getLightTransform().getPosition();
-    if (ImGui::SliderFloat3("##Light position", &lightPos.x, -100.f, 100.f, "%.1f"))
-        m_Scene->getLightTransform().setPosition(lightPos);
-    ImGui::TextWrapped("Light intensity");
-    ImGui::SliderFloat("##Light intensity", &m_Scene->getLightComponent().intensity, 0.f, 1'000'000'000.f, "%.1f", ImGuiSliderFlags_Logarithmic);
-    ImGui::TextWrapped("Light color");
-    ImGui::SliderFloat3("##Light color", &m_Scene->getLightComponent().color.x, 0.f, 1.f, "%.01f");
-
-    auto scale = m_Scene->getMeshTransform().getScale();
-    ImGui::TextWrapped("Scale");
-    if (ImGui::SliderFloat3("##Scale", &scale.x, 0.01f, 1.f, "%.3f"))
-        m_Scene->getMeshTransform().setScale(scale);
-
-    ImGui::End();
-}
-
 void DetailsPanel::onInit()
 {
     vrm::Scene* scene = &vrm::Application::Get().getGameLayer().getScene();
@@ -45,4 +19,59 @@ void DetailsPanel::onInit()
         m_Scene = asHeightFieldScene;
     else
         VRM_ASSERT_MSG(false, "DetailsPanel: Scene is not of type HeightFieldScene.");
+
+    m_TextureExplorer.init();
+}
+
+void DetailsPanel::onImgui()
+{
+    if (ImGui::Begin("Details panel"))
+    {
+        if (ImGui::Button("Update mesh"))
+        {
+            m_Scene->updateMesh();
+        }
+
+        if (ImGui::Button("Update textures"))
+        {
+            m_TextureExplorer.addOrUpdateTexture(
+                0,
+                "Height",
+                m_Scene->getHeightField().toTexture()
+            );
+            m_TextureExplorer.addOrUpdateTexture(
+                1,
+                "Slope",
+                m_Scene->getHeightField().getSlopeScalarField().toTexture()
+            );
+            m_TextureExplorer.addOrUpdateTexture(
+                2,
+                "Average slope",
+                m_Scene->getHeightField().getAverageSlopeScalarField().toTexture()
+            );
+            m_TextureExplorer.addOrUpdateTexture(
+                3,
+                "Laplacian",
+                m_Scene->getHeightField().getLaplacianScalarField().toTexture()
+            );
+        }
+
+        ImGui::TextWrapped("Light position");
+        auto lightPos = m_Scene->getLightTransform().getPosition();
+        if (ImGui::SliderFloat3("##Light position", &lightPos.x, -100.f, 100.f, "%.1f"))
+            m_Scene->getLightTransform().setPosition(lightPos);
+        ImGui::TextWrapped("Light intensity");
+        ImGui::SliderFloat("##Light intensity", &m_Scene->getLightComponent().intensity, 0.f, 1'000'000'000.f, "%.1f", ImGuiSliderFlags_Logarithmic);
+        ImGui::TextWrapped("Light color");
+        ImGui::ColorPicker3("##Light color", &m_Scene->getLightComponent().color.x);
+
+        auto scale = m_Scene->getMeshTransform().getScale();
+        ImGui::TextWrapped("Scale");
+        if (ImGui::SliderFloat3("##Scale", &scale.x, 0.01f, 1.f, "%.3f"))
+            m_Scene->getMeshTransform().setScale(scale);
+
+        ImGui::End();
+    }
+
+    m_TextureExplorer.renderImgui();
 }

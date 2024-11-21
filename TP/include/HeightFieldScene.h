@@ -22,6 +22,7 @@ public:
 
     void updateMesh();
 
+    inline HeightField& getHeightField() { return m_HeightField; }
     inline vrm::TransformComponent& getMeshTransform() { return *m_MeshTransform; }
     inline vrm::PointLightComponent& getLightComponent() { return *m_LightComponent; }
     inline vrm::TransformComponent& getLightTransform() { return *m_LightTransform; }
