@@ -1,6 +1,7 @@
 #include "ScalarFields/ScalarField.h"
 
 #include <Vroom/Core/Assert.h>
+#include <Vroom/Render/Abstraction/GLCall.h>
 
 void ScalarField::setFromTexture(const vrm::Texture2D& texture)
 {
@@ -34,6 +35,13 @@ vrm::Texture2D ScalarField::toTexture(float min, float max) const
 
     vrm::Texture2D texture;
     texture.create(static_cast<int>(m_Width), static_cast<int>(m_Height), vrm::Texture2D::Format::Grayscale, pixels.data());
+    static GLint swizzle[4] = {
+        GL_RED,
+        GL_RED,
+        GL_RED,
+        GL_ONE
+    };
+    GLCall(glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle));
 
     return texture;
 }
