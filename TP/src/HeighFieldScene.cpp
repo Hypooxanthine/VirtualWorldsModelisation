@@ -23,7 +23,7 @@ void HeightFieldScene::onInit()
     auto meshEntity = createEntity("HeightField");
     meshEntity.addComponent<vrm::MeshComponent>(m_MeshAsset.createInstance());
     m_MeshTransform = &meshEntity.getComponent<vrm::TransformComponent>();
-        m_MeshTransform->setScale({1.f, .01f, 1.f});
+        m_MeshTransform->setScale({1.f, .025f, 1.f});
 
     auto lightEntity = createEntity("Light");
         m_LightTransform = &lightEntity.getComponent<vrm::TransformComponent>();
