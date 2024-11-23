@@ -5,6 +5,10 @@
 #include "imgui.h"
 
 #include <Vroom/Render/Abstraction/FrameBuffer.h>
+#include <Vroom/Render/Camera/FirstPersonCamera.h>
+#include <Vroom/Event/Trigger/TriggerManager.h>
+#include <Vroom/Event/CustomEvent/CustomEventManager.h>
+#include <glm/gtc/constants.hpp>
 
 #include "UserInterface/MainMenuBar.h"
 #include "UserInterface/StatisticsPanel.h"
@@ -30,6 +34,16 @@ private:
 private:
     vrm::FrameBuffer m_FrameBuffer;
     ImFont* m_Font;
+
+    // Events
+    vrm::TriggerManager m_Triggers;
+    vrm::CustomEventManager m_CustomEvents;
+
+    // Camera params
+    vrm::FirstPersonCamera m_Camera;
+    float forwardValue = 0.f, rightValue = 0.f, upValue = 0.f;
+	float turnRightValue = 0.f, lookUpValue = 0.f;
+	float myCameraSpeed = 10.f, myCameraAngularSpeed = .08f * glm::two_pi<float>() / 360.f;
 
     // UI
     MainMenuBar m_MainMenuBar;

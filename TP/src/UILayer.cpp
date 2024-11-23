@@ -10,7 +10,36 @@
 #include "backends/imgui_impl_opengl3.h"
 
 UILayer::UILayer()
+    : m_Camera(0.1f, 100.f, glm::radians(90.f), 0.f, { 0.f, 10.f, 0.f }, { glm::radians(90.f), 0.f, 0.f })
 {
+    // Events
+    m_Triggers.createTrigger("MoveForward")
+        .bindInput(vrm::KeyCode::W)
+        .bindCallback([this](bool triggered) { forwardValue += triggered ? 1.f : -1.f; });
+    m_Triggers.createTrigger("MoveBackward")
+        .bindInput(vrm::KeyCode::S)
+        .bindCallback([this](bool triggered) { forwardValue -= triggered ? 1.f : -1.f; });
+    m_Triggers.createTrigger("MoveRight")
+        .bindInput(vrm::KeyCode::D)
+        .bindCallback([this](bool triggered) { rightValue += triggered ? 1.f : -1.f; });
+    m_Triggers.createTrigger("MoveLeft")
+        .bindInput(vrm::KeyCode::A)
+        .bindCallback([this](bool triggered) { rightValue -= triggered ? 1.f : -1.f; });
+    m_Triggers.createTrigger("MoveUp")
+        .bindInput(vrm::KeyCode::Space)
+        .bindCallback([this](bool triggered) { upValue += triggered ? 1.f : -1.f; });
+    m_Triggers.createTrigger("MoveDown")
+        .bindInput(vrm::KeyCode::LeftShift)
+        .bindCallback([this](bool triggered) { upValue -= triggered ? 1.f : -1.f; });
+    m_Triggers.createTrigger("MouseLeft")
+        .bindInput(vrm::MouseCode::Left);
+    
+    m_CustomEvents.createCustomEvent("MouseMoved")
+        .bindInput(vrm::Event::Type::MouseMoved)
+        .bindCallback([this](const vrm::Event& event) {
+            turnRightValue += static_cast<float>(event.mouseDeltaX);
+            lookUpValue -= static_cast<float>(event.mouseDeltaY);
+        });
     
 }
 
@@ -58,6 +87,9 @@ void UILayer::onInit()
     m_StatisticsPanel.init();
     m_Viewport.init();
     m_DetailsPanel.init();
+    
+    // Camera
+    gameLayer.getScene().setCamera(&m_Camera);
 }
 
 void UILayer::onEnd()
@@ -87,12 +119,18 @@ void UILayer::onUpdate(float dt)
     if (m_Viewport.didSizeChangeLastFrame())
         onViewportResize();
 
-    // If the viewport is active, game layer has to handle events
+    // If the viewport is active, game layer has to handle events, and camera has to be updated
     if (m_Viewport.isActive())
     {
         app.getWindow().setCursorVisible(false);
         app.getGameLayer().setShouldHandleEvents(true);
         app.getGameLayer().setShouldUpdate(true);
+
+        m_Camera.move(forwardValue * myCameraSpeed * dt * m_Camera.getForwardVector());
+        m_Camera.move(rightValue * myCameraSpeed * dt * m_Camera.getRightVector());
+        m_Camera.move(upValue * myCameraSpeed * dt * glm::vec3{0.f, 1.f, 0.f});
+        m_Camera.addYaw(turnRightValue * myCameraAngularSpeed);
+        m_Camera.addPitch(lookUpValue * myCameraAngularSpeed);
     }
     else
     {
@@ -100,6 +138,9 @@ void UILayer::onUpdate(float dt)
         app.getGameLayer().setShouldHandleEvents(false);
         app.getGameLayer().setShouldUpdate(false);
     }
+
+    lookUpValue = 0.f;
+    turnRightValue = 0.f;
 }
 
 void UILayer::onRender()
@@ -114,6 +155,9 @@ void UILayer::onEvent(vrm::Event& e)
 {
     if (e.type == vrm::Event::Type::Exit)
         vrm::Application::Get().exit();
+
+    m_Triggers.check(e);
+    m_CustomEvents.check(e);
 }
 
 void UILayer::onImgui()
