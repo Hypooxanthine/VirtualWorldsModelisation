@@ -29,11 +29,6 @@ void DetailsPanel::onImgui()
 {
     if (ImGui::Begin("Details panel"))
     {
-        if (ImGui::Button("Update mesh"))
-        {
-            m_Scene->updateMesh();
-        }
-
         if (ImGui::Button("Update textures"))
         {
             m_TextureExplorer.addOrUpdateTexture(
@@ -68,16 +63,19 @@ void DetailsPanel::onImgui()
         ImGui::ColorPicker3("##Light color", &m_Scene->getLightComponent().color.x);
 
         ImGui::TextWrapped("Distance between points");
-        if (ImGui::SliderFloat("##Point spacing", &m_HeightFieldSpecs.pointSpacing, 0.01f, 10.f, "%.3f"))
-            m_Scene->updateHeightField(m_HeightFieldSpecs);
+        ImGui::SliderFloat("##Point spacing", &m_HeightFieldSpecs.pointSpacing, 0.01f, 10.f, "%.3f");
 
         ImGui::TextWrapped("Min/max height");
-        if (ImGui::SliderFloat2("##Min/max height", m_HeightFieldSpecs.zMinMax.data(), -100.f, 100.f))
+        ImGui::SliderFloat2("##Min/max height", m_HeightFieldSpecs.zMinMax.data(), -100.f, 100.f);
+
+        if (ImGui::Button("Update height field"))
+        {
             m_Scene->updateHeightField(m_HeightFieldSpecs);
+        }
 
         auto scale = m_Scene->getMeshTransform().getScale();
         ImGui::TextWrapped("Scale");
-        if (ImGui::SliderFloat3("##Scale", &scale.x, 0.01f, 1.f, "%.3f"))
+        if (ImGui::SliderFloat3("##Scale", &scale.x, 0.01f, 10.f, "%.3f"))
             m_Scene->getMeshTransform().setScale(scale);
 
         ImGui::End();

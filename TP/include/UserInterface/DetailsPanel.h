@@ -22,6 +22,6 @@ private:
 
     ScalarField::FromTextureSpecs m_HeightFieldSpecs = ScalarField::FromTextureSpecs{
         .pointSpacing = 1.f,
-        .zMinMax = { -10.f, 10.f }
+        .zMinMax = { 0.f, 20.f }
     };
 };

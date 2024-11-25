@@ -10,7 +10,7 @@
 #include "backends/imgui_impl_opengl3.h"
 
 UILayer::UILayer()
-    : m_Camera(0.1f, 100.f, glm::radians(90.f), 0.f, { 0.f, 10.f, 0.f }, { glm::radians(90.f), 0.f, 0.f })
+    : m_Camera(0.1f, 100.f, glm::radians(90.f), 0.f, { 3.f, 20.f, 3.f }, { glm::radians(15.f), glm::radians(125.f), 0.f })
 {
     // Events
     m_Triggers.createTrigger("MoveForward")
@@ -90,6 +90,7 @@ void UILayer::onInit()
     
     // Camera
     gameLayer.getScene().setCamera(&m_Camera);
+    m_StatisticsPanel.updateCameraOutput(m_Camera);
 }
 
 void UILayer::onEnd()
@@ -131,6 +132,8 @@ void UILayer::onUpdate(float dt)
         m_Camera.move(upValue * myCameraSpeed * dt * glm::vec3{0.f, 1.f, 0.f});
         m_Camera.addYaw(turnRightValue * myCameraAngularSpeed);
         m_Camera.addPitch(lookUpValue * myCameraAngularSpeed);
+
+            m_StatisticsPanel.updateCameraOutput(m_Camera);
     }
     else
     {
