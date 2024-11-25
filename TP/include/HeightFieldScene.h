@@ -18,6 +18,7 @@ public:
     void onUpdate(float dt) override;
     void onRender() override;
 
+    void updateHeightField(const ScalarField::FromTextureSpecs& specs, bool shouldUpdateMesh = true);
     void updateMesh();
 
     inline HeightField& getHeightField() { return m_HeightField; }

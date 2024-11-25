@@ -3,7 +3,7 @@
 #include <Vroom/Core/Assert.h>
 #include <Vroom/Render/Abstraction/GLCall.h>
 
-void ScalarField::setFromTexture(const vrm::Texture2D& texture)
+void ScalarField::setFromTexture(const vrm::Texture2D& texture, const FromTextureSpecs& specs)
 {
     if (texture.getFormat() != vrm::Texture2D::Format::Grayscale)
     {
@@ -12,6 +12,7 @@ void ScalarField::setFromTexture(const vrm::Texture2D& texture)
 
     m_Width = texture.getWidth();
     m_Height = texture.getHeight();
+    m_PointSpacing = specs.pointSpacing;
     m_Data.resize(m_Width * m_Height);
 
     std::vector<unsigned char> pixels = texture.getData();
@@ -20,12 +21,14 @@ void ScalarField::setFromTexture(const vrm::Texture2D& texture)
 
     for (size_t i = 0; i < m_Width * m_Height; i++)
     {
-        m_Data[i] = static_cast<float>(pixels[i * texture.getBPP()]);
+        const float normalized = static_cast<float>(pixels[i * texture.getBPP()] / 255.f);
+        m_Data[i] = specs.zmin + normalized * (specs.zmax - specs.zmin);
     }
 }
 
 vrm::Texture2D ScalarField::toTexture(float min, float max) const
 {
+    VRM_LOG_INFO("To texture, min: {}, max: {}", min, max);
     std::vector<unsigned char> pixels(m_Width * m_Height);
 
     for (size_t i = 0; i < m_Data.size(); i++)
