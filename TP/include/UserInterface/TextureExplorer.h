@@ -19,6 +19,11 @@ public:
         m_Textures[slot] = std::make_pair(name, std::move(texture));
     }
 
+    inline const vrm::Texture2D& getTexture(size_t slot) const
+    {
+        return m_Textures.at(slot).second;
+    }
+
 protected:
     void onImgui() override;
     void onInit() override;
