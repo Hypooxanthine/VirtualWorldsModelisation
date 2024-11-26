@@ -27,6 +27,7 @@ public:
     inline vrm::TransformComponent& getLightTransform() { return *m_LightTransform; }
 
 private:
+    vrm::ByteTextureData m_HeightMap;
     HeightField m_HeightField;
     vrm::MeshAsset m_MeshAsset;
     vrm::TransformComponent* m_MeshTransform = nullptr;

@@ -2,6 +2,7 @@
 
 #include <map>
 
+#include <Vroom/Asset/AssetData/TextureData.h>
 #include <Vroom/Render/Abstraction/Texture2D.h>
 
 #include "UserInterface/ImGuiElement.h"
@@ -14,14 +15,16 @@ public:
     inline TextureExplorer() = default;
     inline ~TextureExplorer() = default;
 
-    inline void addOrUpdateTexture(size_t slot, const std::string& name, vrm::Texture2D&& texture)
+    inline void addOrUpdateTexture(size_t slot, const std::string& name, vrm::ByteTextureData&& texture)
     {
-        m_Textures[slot] = std::make_pair(name, std::move(texture));
+        vrm::Texture2D gpuTexture;
+        gpuTexture.loadFromTextureData(texture);
+        m_Textures[slot] = std::make_tuple(name, std::move(texture), std::move(gpuTexture));
     }
 
-    inline const vrm::Texture2D& getTexture(size_t slot) const
+    inline const vrm::ByteTextureData& getTexture(size_t slot) const
     {
-        return m_Textures.at(slot).second;
+        return std::get<1>(m_Textures.at(slot));
     }
 
 protected:
@@ -31,5 +34,5 @@ protected:
 private:
     HeightFieldScene* m_Scene = nullptr;
     
-    std::map<size_t, std::pair<std::string, vrm::Texture2D>> m_Textures;
+    std::map<size_t, std::tuple<std::string, vrm::ByteTextureData, vrm::Texture2D>> m_Textures;
 };

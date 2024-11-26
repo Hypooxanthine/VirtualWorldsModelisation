@@ -3,7 +3,7 @@
 #include <vector>
 #include <array>
 
-#include <Vroom/Render/Abstraction/Texture2D.h>
+#include <Vroom/Asset/AssetData/TextureData.h>
 #include <Vroom/Asset/AssetData/MeshData.h>
 
 #include <glm/glm.hpp>
@@ -29,9 +29,9 @@ public:
     inline constexpr ScalarField() {}
     inline constexpr ScalarField(size_t width, size_t height) : m_Width(width), m_Height(height), m_Data(width * height, 0.f) {}
 
-    void setFromTexture(const vrm::Texture2D& texture, const FromTextureSpecs& specs);
-    vrm::Texture2D toTexture(float min, float max) const;
-    vrm::Texture2D toTexture() const { return toTexture(getMin(), getMax()); }
+    void setFromTexture(const vrm::ByteTextureData& texture, const FromTextureSpecs& specs);
+    vrm::ByteTextureData toTexture(float min, float max) const;
+    vrm::ByteTextureData toTexture() const { return toTexture(getMin(), getMax()); }
 
     inline constexpr glm::vec2 getGradient(size_t x, size_t y) const;
     inline constexpr glm::vec2 getGradient(size_t i) const { return getGradient(xCoord(i), yCoord(i)); }

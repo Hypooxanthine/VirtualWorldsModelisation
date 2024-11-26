@@ -14,6 +14,8 @@ HeightFieldScene::~HeightFieldScene()
 
 void HeightFieldScene::onInit()
 {
+    // Height map
+    VRM_ASSERT_MSG(m_HeightMap.loadFromFile("Resources/Textures/great_lakes.jpg"), "Failed to load texture");
 
     // Entities
     auto meshEntity = createEntity("HeightField");
@@ -43,9 +45,7 @@ void HeightFieldScene::onRender()
 
 void HeightFieldScene::updateHeightField(const ScalarField::FromTextureSpecs& specs, bool shouldUpdateMesh)
 {
-    vrm::Texture2D tex;
-    VRM_ASSERT_MSG(tex.loadFromFile("Resources/Textures/great_lakes.jpg"), "Failed to load texture");
-    m_HeightField.setFromTexture(tex, specs);
+    m_HeightField.setFromTexture(m_HeightMap, specs);
 
     if (shouldUpdateMesh)
         updateMesh();
