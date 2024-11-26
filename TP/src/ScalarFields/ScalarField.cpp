@@ -38,13 +38,6 @@ vrm::ByteTextureData ScalarField::toTexture(float min, float max) const
 
     vrm::ByteTextureData texture;
     texture.create(static_cast<int>(m_Width), static_cast<int>(m_Height), 1, pixels.data());
-    static GLint swizzle[4] = {
-        GL_RED,
-        GL_RED,
-        GL_RED,
-        GL_ONE
-    };
-    GLCall(glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle));
 
     return texture;
 }

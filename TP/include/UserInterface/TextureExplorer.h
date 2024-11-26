@@ -2,6 +2,7 @@
 
 #include <map>
 
+#include <Vroom/Render/Abstraction/GLCall.h>
 #include <Vroom/Asset/AssetData/TextureData.h>
 #include <Vroom/Render/Abstraction/Texture2D.h>
 
@@ -19,6 +20,13 @@ public:
     {
         vrm::Texture2D gpuTexture;
         gpuTexture.loadFromTextureData(texture);
+        static GLint swizzle[4] = {
+            GL_RED,
+            GL_RED,
+            GL_RED,
+            GL_ONE
+        };
+        GLCall(glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle));
         m_Textures[slot] = std::make_tuple(name, std::move(texture), std::move(gpuTexture));
     }
 
