@@ -49,13 +49,13 @@ vrm::MeshData HeightField::toMeshData() const
     {
         for (size_t x = 0; x < getSizeX() - 1; ++x)
         {
-            indices.push_back(index(x, y));
-            indices.push_back(index(x + 1, y + 1));
-            indices.push_back(index(x + 1, y));
+            indices.push_back(static_cast<uint32_t>(index(x, y)));
+            indices.push_back(static_cast<uint32_t>(index(x + 1, y + 1)));
+            indices.push_back(static_cast<uint32_t>(index(x + 1, y)));
 
-            indices.push_back(index(x, y));
-            indices.push_back(index(x, y + 1));
-            indices.push_back(index(x + 1, y + 1));
+            indices.push_back(static_cast<uint32_t>(index(x, y)));
+            indices.push_back(static_cast<uint32_t>(index(x, y + 1)));
+            indices.push_back(static_cast<uint32_t>(index(x + 1, y + 1)));
             
 
             glm::vec3 v0 = vertices[indices[indices.size() - 6]].position;
