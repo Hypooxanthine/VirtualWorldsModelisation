@@ -21,10 +21,10 @@ void HeightFieldScene::onInit()
 
     auto lightEntity = createEntity("Light");
         m_LightTransform = &lightEntity.getComponent<vrm::TransformComponent>();
-            m_LightTransform->setPosition({0.f, 100.f, 0.f});
+            m_LightTransform->setPosition({25.f, 50.f, 25.f});
         m_LightComponent = &lightEntity.addComponent<vrm::PointLightComponent>();
             m_LightComponent->color = glm::vec3{1.f};
-            m_LightComponent->intensity = 4'000.f;
+            m_LightComponent->intensity = 1'000.f;
             m_LightComponent->radius = 10'000.f;
 }
 
