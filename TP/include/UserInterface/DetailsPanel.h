@@ -17,11 +17,16 @@ protected:
     void onInit() override;
 
 private:
+    void showTexturesLoader();
+    void updateTextures();
+    void updateHeightField(bool adjustMinMax);
+
+private:
     HeightFieldScene* m_Scene = nullptr;
     TextureExplorer m_TextureExplorer;
 
     ScalarField::FromTextureSpecs m_HeightFieldSpecs = ScalarField::FromTextureSpecs{
         .pointSpacing = 1.f,
-        .zMinMax = { 0.f, 20.f }
+        .zMinMax = { 0.f, 8.f }
     };
 };

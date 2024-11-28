@@ -14,9 +14,6 @@ HeightFieldScene::~HeightFieldScene()
 
 void HeightFieldScene::onInit()
 {
-    // Height map
-    VRM_ASSERT_MSG(m_HeightMap.loadFromFile("Resources/Textures/great_lakes.jpg"), "Failed to load texture");
-
     // Entities
     auto meshEntity = createEntity("HeightField");
     meshEntity.addComponent<vrm::MeshComponent>(m_MeshAsset.createInstance());
@@ -41,6 +38,11 @@ void HeightFieldScene::onUpdate(float dt)
 
 void HeightFieldScene::onRender()
 {
+}
+
+void HeightFieldScene::reloadTexture(const std::string& path)
+{
+    VRM_ASSERT_MSG(m_HeightMap.loadFromFile(path), "Failed to load texture");
 }
 
 void HeightFieldScene::updateHeightField(const ScalarField::FromTextureSpecs& specs, bool shouldUpdateMesh)

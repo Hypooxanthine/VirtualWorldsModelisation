@@ -18,9 +18,11 @@ public:
     void onUpdate(float dt) override;
     void onRender() override;
 
+    void reloadTexture(const std::string& path);
     void updateHeightField(const ScalarField::FromTextureSpecs& specs, bool shouldUpdateMesh = true);
     void updateMesh();
 
+    inline vrm::ByteTextureData& getHeightMap() { return m_HeightMap; }
     inline HeightField& getHeightField() { return m_HeightField; }
     inline vrm::TransformComponent& getMeshTransform() { return *m_MeshTransform; }
     inline vrm::PointLightComponent& getLightComponent() { return *m_LightComponent; }

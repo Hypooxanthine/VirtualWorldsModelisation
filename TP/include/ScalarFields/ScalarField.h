@@ -27,7 +27,9 @@ public:
     };
 public:
     inline constexpr ScalarField() {}
-    inline constexpr ScalarField(size_t width, size_t height) : m_Width(width), m_Height(height), m_Data(width * height, 0.f) {}
+    inline constexpr ScalarField(size_t width, size_t height, float defaultValues = 0.f)
+        : m_Width(width), m_Height(height), m_Data(width * height, defaultValues)
+    {}
 
     void setFromTexture(const vrm::ByteTextureData& texture, const FromTextureSpecs& specs);
     vrm::ByteTextureData toTexture(float min, float max) const;
