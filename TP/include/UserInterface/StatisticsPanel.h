@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <Vroom/Render/Camera/FirstPersonCamera.h>
 
 #include "UserInterface/ImGuiElement.h"

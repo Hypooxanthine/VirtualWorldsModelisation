@@ -1,6 +1,7 @@
 #include "ScalarFields/HeightField.h"
 
 #include <queue>
+#include <cmath>
 #include <Vroom/Core/Log.h>
 
 float HeightField::getAverageSlope(size_t x, size_t y) const
@@ -128,7 +129,7 @@ ScalarField HeightField::getDrainageAreaScalarField(float power) const
                 if (delta < 0.f)
                     continue;
                 
-                float slope = std::powf(delta / getPointSpacing(), power);
+                float slope = std::pow(delta / getPointSpacing(), power);
 
                 if (std::abs(x - x0 + y - y0) == 2)
                     slope /= std::sqrt(2.f); // Diagonal
