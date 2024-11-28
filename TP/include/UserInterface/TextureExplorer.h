@@ -16,6 +16,11 @@ public:
     inline TextureExplorer() = default;
     inline ~TextureExplorer() = default;
 
+    inline void clear()
+    {
+        m_Textures.clear();
+    }
+
     inline void addOrUpdateTexture(size_t slot, const std::string& name, vrm::ByteTextureData&& texture)
     {
         vrm::Texture2D gpuTexture;

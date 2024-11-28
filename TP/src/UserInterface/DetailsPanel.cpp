@@ -102,10 +102,12 @@ void DetailsPanel::showTexturesLoader()
 
 void DetailsPanel::updateTextures()
 {
+    m_TextureExplorer.clear();
+    
     m_TextureExplorer.addOrUpdateTexture(
         0,
         "Height",
-        m_Scene->getHeightField().toTexture()
+        vrm::ByteTextureData(m_Scene->getHeightMap())
     );
     m_TextureExplorer.addOrUpdateTexture(
         1,

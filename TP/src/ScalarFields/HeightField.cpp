@@ -126,13 +126,15 @@ ScalarField HeightField::getDrainageAreaScalarField(float power) const
 
                 float delta = currentValue - getHeight(x, y);
 
-                if (delta < 0.f)
+                if (delta <= 0.f)
                     continue;
                 
-                float slope = std::pow(delta / getPointSpacing(), power);
+                float slope = delta / getPointSpacing();
 
                 if (std::abs(x - x0 + y - y0) == 2)
                     slope /= std::sqrt(2.f); // Diagonal
+
+                slope = std::pow(slope, power);
                 
                 totalSlope += slope;
                 slopes[(x - x0) + (y - y0) * (x2 - x0 + 1)] = slope;

@@ -18,7 +18,7 @@ public:
     inline float getAverageSlope(size_t i) const { return getAverageSlope(xCoord(i), yCoord(i)); }
     inline ScalarField getAverageSlopeScalarField() const;
 
-    ScalarField getDrainageAreaScalarField(float power = 5.f) const;
+    ScalarField getDrainageAreaScalarField(float power = 1.f) const;
 
     size_t getWidth() const = delete;
     inline constexpr size_t getSizeX() const { return ScalarField::getWidth(); }

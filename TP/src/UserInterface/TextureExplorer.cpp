@@ -16,12 +16,19 @@ void TextureExplorer::onImgui()
         auto& [name, texture, gpuTexture] = tuple;
         if (ImGui::BeginTabItem(name.c_str()))
         {
+            float textureSizeRatio = texture.getWidth() / texture.getHeight();
+            ImVec2 availableSize = ImGui::GetContentRegionAvail();
+            float availableSizeRatio = availableSize.x / availableSize.y;
+            ImVec2 desiredSize;
+
+            if (textureSizeRatio > availableSizeRatio)
+                desiredSize = ImVec2(availableSize.x, availableSize.x / textureSizeRatio);
+            else
+                desiredSize = ImVec2(availableSize.y * textureSizeRatio, availableSize.y);
+
             ImGui::Image(
                 (ImTextureID)gpuTexture.getRendererID(),
-                ImVec2(
-                    static_cast<float>(texture.getWidth()),
-                    static_cast<float>(texture.getHeight())
-                ),
+                desiredSize,
                 ImVec2(0, 1), ImVec2(1, 0)
             );
 
