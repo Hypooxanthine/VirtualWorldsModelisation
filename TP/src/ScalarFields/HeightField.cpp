@@ -182,7 +182,7 @@ ScalarField HeightField::getWetnessIndexScalarField(float power) const
 
     for (size_t i = 0; i < getSizeX() * getSizeY(); ++i)
     {
-        wetnessIndex.setValue(i, std::log(drainageArea.getValue(i)) / (slope.getValue(i) + 0.00001f));
+        wetnessIndex.setValue(i, std::log(drainageArea.getValue(i)) / (slope.getValue(i) + 1.f));
     }
 
     return wetnessIndex;
