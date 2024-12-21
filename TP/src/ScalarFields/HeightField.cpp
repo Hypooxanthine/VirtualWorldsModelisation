@@ -159,3 +159,31 @@ ScalarField HeightField::getDrainageAreaScalarField(float power) const
 
     return drainageArea;
 }
+
+ScalarField HeightField::getStreamPowerScalarField(float power) const
+{
+    ScalarField drainageArea = getDrainageAreaScalarField(power);
+    ScalarField slope = getSlopeScalarField();
+    ScalarField streamPower(getSizeX(), getSizeY(), 1.f);
+
+    for (size_t i = 0; i < getSizeX() * getSizeY(); ++i)
+    {
+        streamPower.setValue(i, drainageArea.getValue(i) * std::sqrtf(slope.getValue(i)));
+    }
+
+    return streamPower;
+}
+
+ScalarField HeightField::getWetnessIndexScalarField(float power) const
+{
+    ScalarField drainageArea = getDrainageAreaScalarField(power);
+    ScalarField slope = getSlopeScalarField();
+    ScalarField wetnessIndex(getSizeX(), getSizeY(), 1.f);
+
+    for (size_t i = 0; i < getSizeX() * getSizeY(); ++i)
+    {
+        wetnessIndex.setValue(i, std::log(drainageArea.getValue(i)) / (slope.getValue(i) + 0.00001f));
+    }
+
+    return wetnessIndex;
+}

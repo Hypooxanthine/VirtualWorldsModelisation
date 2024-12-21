@@ -10,6 +10,8 @@
 
 #include "HeightFieldScene.h"
 
+#include "ScopeProfiler.h"
+
 DetailsPanel::DetailsPanel()
 {
 }
@@ -103,31 +105,84 @@ void DetailsPanel::showTexturesLoader()
 void DetailsPanel::updateTextures()
 {
     m_TextureExplorer.clear();
-    
+
+    float t;
+    vrm::ByteTextureData map;
+    {
+        PROFILE_SCOPE_VARIABLE(t);
+        map = vrm::ByteTextureData(m_Scene->getHeightMap());
+    }
     m_TextureExplorer.addOrUpdateTexture(
         0,
         "Height",
-        vrm::ByteTextureData(m_Scene->getHeightMap())
+        std::move(map),
+        t
     );
+
+    {
+        PROFILE_SCOPE_VARIABLE(t);
+        map = m_Scene->getHeightField().getSlopeScalarField().toTexture();
+    }
     m_TextureExplorer.addOrUpdateTexture(
         1,
         "Slope",
-        m_Scene->getHeightField().getSlopeScalarField().toTexture()
+        std::move(map),
+        t
     );
+
+    {
+        PROFILE_SCOPE_VARIABLE(t);
+        map = m_Scene->getHeightField().getAverageSlopeScalarField().toTexture();
+    }
     m_TextureExplorer.addOrUpdateTexture(
         2,
         "Average slope",
-        m_Scene->getHeightField().getAverageSlopeScalarField().toTexture()
+        std::move(map),
+        t
     );
+
+    {
+        PROFILE_SCOPE_VARIABLE(t);
+        map = m_Scene->getHeightField().getLaplacianScalarField().toTexture();
+    }
     m_TextureExplorer.addOrUpdateTexture(
         3,
         "Laplacian",
-        m_Scene->getHeightField().getLaplacianScalarField().toTexture()
+        std::move(map),
+        t
     );
+
+    {
+        PROFILE_SCOPE_VARIABLE(t);
+        map = m_Scene->getHeightField().getDrainageAreaScalarField(6.f).toTexture();
+    }
     m_TextureExplorer.addOrUpdateTexture(
         4,
         "Drainage area",
-        m_Scene->getHeightField().getDrainageAreaScalarField().toTexture()
+        std::move(map),
+        t
+    );
+
+    {
+        PROFILE_SCOPE_VARIABLE(t);
+        map = m_Scene->getHeightField().getStreamPowerScalarField().toTexture();
+    }
+    m_TextureExplorer.addOrUpdateTexture(
+        5,
+        "Stream power",
+        std::move(map),
+        t
+    );
+
+    {
+        PROFILE_SCOPE_VARIABLE(t);
+        map = m_Scene->getHeightField().getWetnessIndexScalarField().toTexture();
+    }
+    m_TextureExplorer.addOrUpdateTexture(
+        6,
+        "Wetness index",
+        std::move(map),
+        t
     );
 }
 

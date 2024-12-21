@@ -10,6 +10,7 @@ HeightFieldScene::HeightFieldScene()
 
 HeightFieldScene::~HeightFieldScene()
 {
+    std::filesystem::remove_all("Temp");
 }
 
 void HeightFieldScene::onInit()

@@ -21,7 +21,7 @@ public:
         m_Textures.clear();
     }
 
-    inline void addOrUpdateTexture(size_t slot, const std::string& name, vrm::ByteTextureData&& texture)
+    inline void addOrUpdateTexture(size_t slot, const std::string& name, vrm::ByteTextureData&& texture, float computeTime)
     {
         vrm::Texture2D gpuTexture;
         gpuTexture.loadFromTextureData(texture);
@@ -32,7 +32,7 @@ public:
             GL_ONE
         };
         GLCall(glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle));
-        m_Textures[slot] = std::make_tuple(name, std::move(texture), std::move(gpuTexture));
+        m_Textures[slot] = std::make_tuple(name, std::move(texture), std::move(gpuTexture), computeTime);
     }
 
     inline const vrm::ByteTextureData& getTexture(size_t slot) const
@@ -47,5 +47,6 @@ protected:
 private:
     HeightFieldScene* m_Scene = nullptr;
     
-    std::map<size_t, std::tuple<std::string, vrm::ByteTextureData, vrm::Texture2D>> m_Textures;
+    std::map<size_t, std::tuple<std::string, vrm::ByteTextureData, vrm::Texture2D, float>> m_Textures;
+    std::string m_SaveName = "texture.png";
 };

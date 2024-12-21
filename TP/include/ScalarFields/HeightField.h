@@ -20,6 +20,10 @@ public:
 
     ScalarField getDrainageAreaScalarField(float power = 1.f) const;
 
+    ScalarField getStreamPowerScalarField(float power = 1.f) const;
+
+    ScalarField getWetnessIndexScalarField(float power = 1.f) const;
+
     size_t getWidth() const = delete;
     inline constexpr size_t getSizeX() const { return ScalarField::getWidth(); }
 
