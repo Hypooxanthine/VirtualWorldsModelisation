@@ -168,7 +168,7 @@ ScalarField HeightField::getStreamPowerScalarField(float power) const
 
     for (size_t i = 0; i < getSizeX() * getSizeY(); ++i)
     {
-        streamPower.setValue(i, drainageArea.getValue(i) * std::sqrtf(slope.getValue(i)));
+        streamPower.setValue(i, drainageArea.getValue(i) * std::sqrt(slope.getValue(i)));
     }
 
     return streamPower;
