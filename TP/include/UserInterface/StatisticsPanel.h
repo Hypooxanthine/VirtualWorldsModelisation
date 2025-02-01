@@ -21,4 +21,5 @@ public: // Public ImGui related variables
 
 private:
     std::string m_CameraOutput;
+    bool m_VSync = false;
 };
