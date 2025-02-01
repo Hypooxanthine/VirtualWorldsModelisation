@@ -28,6 +28,10 @@ public:
     void highlightStartPath(size_t x, size_t y);
     void highlightEndPath(size_t x, size_t y);
 
+    void startPathAnimation(const std::vector<int>& path);
+    inline void stopPathAnimation() { m_IsAnimatingPath = false; }
+    inline void setPathAnimationTime(float time) { m_PathAnimationTime = time; }
+
     inline vrm::ByteTextureData& getHeightMap() { return m_HeightMap; }
     inline HeightField& getHeightField() { return m_HeightField; }
     inline vrm::TransformComponent& getMeshTransform() { return *m_MeshTransform; }
@@ -43,4 +47,10 @@ private:
     // Light params
     vrm::PointLightComponent* m_LightComponent = nullptr;
     vrm::TransformComponent* m_LightTransform = nullptr;
+
+    // Highlighting
+    bool m_IsAnimatingPath = false;
+    std::vector<int> m_Path;
+    size_t m_PathIndex = 0;
+    float m_PathAnimationTime = 0.f;
 };

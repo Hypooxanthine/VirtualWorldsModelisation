@@ -46,6 +46,12 @@ void HeightFieldScene::onInit()
             vrm::AssetManager::Get().getAsset<vrm::MeshAsset>("Resources/Meshes/ControlPoint.obj")
         ).setVisible(false);
         highlightEndPathEntity.getComponent<vrm::TransformComponent>().setScale({ 1.f, 1.f, 1.f });
+
+    auto hightlightPathEntity = createEntity("highlightPath");
+        hightlightPathEntity.addComponent<vrm::MeshComponent>(
+            vrm::AssetManager::Get().getAsset<vrm::MeshAsset>("Resources/Meshes/ControlPoint.obj")
+        ).setVisible(false);
+        hightlightPathEntity.getComponent<vrm::TransformComponent>().setScale({ 1.f, 1.f, 1.f });
 }
 
 void HeightFieldScene::onEnd()
@@ -117,4 +123,11 @@ void HeightFieldScene::highlightEndPath(size_t x, size_t y)
     auto& tc = e.getComponent<vrm::TransformComponent>();
     tc.setPosition(worldPos);
     e.getComponent<vrm::MeshComponent>().setVisible(true);
+}
+
+void HeightFieldScene::startPathAnimation(const std::vector<int>& path)
+{
+    m_Path = path;
+    m_PathIndex = 0;
+    m_IsAnimatingPath = true;
 }
