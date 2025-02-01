@@ -23,6 +23,7 @@ public:
     void updateMesh();
 
     void highlightPoint(size_t x, size_t y, float radius = 1.f);
+    void enableHighlight(bool enable);
 
     inline vrm::ByteTextureData& getHeightMap() { return m_HeightMap; }
     inline HeightField& getHeightField() { return m_HeightField; }

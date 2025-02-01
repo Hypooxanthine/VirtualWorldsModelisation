@@ -29,4 +29,8 @@ private:
         .pointSpacing = 1.f,
         .zMinMax = { 0.f, 8.f }
     };
+
+    bool m_HighlightEnabled = false;
+    float m_HighlightRadius = 1.f;
+    glm::ivec2 m_HighlightCoords = { 0, 0 };
 };

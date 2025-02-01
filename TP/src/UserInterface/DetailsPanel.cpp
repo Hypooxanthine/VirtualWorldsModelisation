@@ -69,7 +69,30 @@ void DetailsPanel::onImgui()
         auto scale = m_Scene->getMeshTransform().getScale();
         ImGui::TextWrapped("Scale");
         if (ImGui::SliderFloat3("##Scale", &scale.x, 0.01f, 10.f, "%.3f"))
+        {
             m_Scene->getMeshTransform().setScale(scale);
+            if (m_HighlightEnabled)
+                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightRadius);
+        }
+
+        ImGui::Separator();
+
+        if (ImGui::Checkbox("Enable vertex highlighting test", &m_HighlightEnabled))
+            m_Scene->enableHighlight(m_HighlightEnabled);
+
+        if (m_HighlightEnabled)
+        {
+            ImGui::TextWrapped("Highlight radius");
+            if (ImGui::SliderFloat("##Highlight radius", &m_HighlightRadius, 0.1f, 10.f, "%.3f"))
+                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightRadius);
+            
+            ImGui::TextWrapped("Highlight vertex");
+            if (ImGui::SliderInt("##Highlight x", &m_HighlightCoords.x, 0, m_Scene->getHeightField().getSizeX() - 1) ||
+                ImGui::SliderInt("##Highlight y", &m_HighlightCoords.y, 0, m_Scene->getHeightField().getSizeY() - 1))
+            {
+                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightRadius);
+            }
+        }
 
         ImGui::End();
     }

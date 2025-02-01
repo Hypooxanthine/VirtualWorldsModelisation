@@ -73,5 +73,14 @@ void HeightFieldScene::highlightPoint(size_t x, size_t y, float radius)
     glm::vec3 localPos = m_HeightField.getLocalPosition(x, y);
     glm::vec3 worldPos = m_MeshTransform->getTransform() * glm::vec4(localPos, 1.f);
 
-    getEntity("Highlight").getComponent<vrm::TransformComponent>().setPosition(worldPos);
+    auto e = getEntity("Highlight");
+    auto& tc = e.getComponent<vrm::TransformComponent>();
+    tc.setPosition(worldPos);
+    tc.setScale({radius, radius, radius});
+    e.getComponent<vrm::MeshComponent>().setVisible(true);
+}
+
+void HeightFieldScene::enableHighlight(bool enable)
+{
+    getEntity("Highlight").getComponent<vrm::MeshComponent>().setVisible(enable);
 }
