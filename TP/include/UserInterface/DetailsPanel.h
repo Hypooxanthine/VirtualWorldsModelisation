@@ -32,5 +32,5 @@ private:
 
     bool m_HighlightSingleEnabled = false;
     float m_HighlightSingleRadius = 1.f;
-    glm::ivec2 m_HighlightCoords = { 0, 0 };
+    glm::ivec2 m_HighlightCoords = { 0, 0 }, m_HighlightStartPathCoords = { 0, 0 }, m_HighlightEndPathCoords = { 0, 0 };
 };

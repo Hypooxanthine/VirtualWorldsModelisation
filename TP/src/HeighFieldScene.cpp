@@ -96,3 +96,25 @@ void HeightFieldScene::enableHighlightSingle(bool enable)
 {
     getEntity("highlightSingle").getComponent<vrm::MeshComponent>().setVisible(enable);
 }
+
+void HeightFieldScene::highlightStartPath(size_t x, size_t y)
+{
+    glm::vec3 localPos = m_HeightField.getLocalPosition(x, y);
+    glm::vec3 worldPos = m_MeshTransform->getTransform() * glm::vec4(localPos, 1.f);
+
+    auto e = getEntity("highlightStartPath");
+    auto& tc = e.getComponent<vrm::TransformComponent>();
+    tc.setPosition(worldPos);
+    e.getComponent<vrm::MeshComponent>().setVisible(true);
+}
+
+void HeightFieldScene::highlightEndPath(size_t x, size_t y)
+{
+    glm::vec3 localPos = m_HeightField.getLocalPosition(x, y);
+    glm::vec3 worldPos = m_MeshTransform->getTransform() * glm::vec4(localPos, 1.f);
+
+    auto e = getEntity("highlightEndPath");
+    auto& tc = e.getComponent<vrm::TransformComponent>();
+    tc.setPosition(worldPos);
+    e.getComponent<vrm::MeshComponent>().setVisible(true);
+}

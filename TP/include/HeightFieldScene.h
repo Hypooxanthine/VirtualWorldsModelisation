@@ -25,6 +25,9 @@ public:
     void highlightPoint(size_t x, size_t y, float radius = 1.f);
     void enableHighlightSingle(bool enable);
 
+    void highlightStartPath(size_t x, size_t y);
+    void highlightEndPath(size_t x, size_t y);
+
     inline vrm::ByteTextureData& getHeightMap() { return m_HeightMap; }
     inline HeightField& getHeightField() { return m_HeightField; }
     inline vrm::TransformComponent& getMeshTransform() { return *m_MeshTransform; }

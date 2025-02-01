@@ -75,36 +75,47 @@ void DetailsPanel::onImgui()
                 m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
         }
 
-        ImGui::Separator();
+        ImGui::Separator();            
 
-        if (m_Scene->getHeightField().isValidIndex(0)
-            && ImGui::Checkbox("Enable single vertex highlighting", &m_HighlightSingleEnabled))
+        if (m_Scene->getHeightField().isValidIndex(0))
         {
-            m_Scene->enableHighlightSingle(m_HighlightSingleEnabled);
-            if (m_HighlightSingleEnabled)
-                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
-        }
-
-        if (m_HighlightSingleEnabled)
-        {
-            ImGui::TextWrapped("Highlight radius");
-            if (ImGui::SliderFloat("##Highlight radius", &m_HighlightSingleRadius, 0.1f, 10.f, "%.3f"))
-                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
-            
             static int min[2] = { 0, 0 };
             static int max[2];
             max[0] = static_cast<int>(m_Scene->getHeightField().getSizeX());
             max[1] = static_cast<int>(m_Scene->getHeightField().getSizeY());
-            
-            ImGui::TextWrapped("Highlight vertex");
 
-            if (ImGui::SliderScalarN("##Highlight coords", ImGuiDataType_S32, &m_HighlightCoords.x, 2, min, max))
+            ImGui::TextWrapped("Highlight path start/end");
+            if (ImGui::SliderScalarN("##Path start", ImGuiDataType_S32, &m_HighlightStartPathCoords.x, 2, min, max))
             {
-                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
+                m_Scene->highlightStartPath(m_HighlightStartPathCoords.x, m_HighlightStartPathCoords.y);
             }
-        }
 
-        
+            if (ImGui::SliderScalarN("##Path end", ImGuiDataType_S32, &m_HighlightEndPathCoords.x, 2, min, max))
+            {
+                m_Scene->highlightEndPath(m_HighlightEndPathCoords.x, m_HighlightEndPathCoords.y);
+            }
+
+            if (ImGui::Checkbox("Enable single vertex highlighting", &m_HighlightSingleEnabled))
+            {
+                m_Scene->enableHighlightSingle(m_HighlightSingleEnabled);
+                if (m_HighlightSingleEnabled)
+                    m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
+            }
+
+            if (m_HighlightSingleEnabled)
+            {
+                ImGui::TextWrapped("Highlight radius");
+                if (ImGui::SliderFloat("##Highlight radius", &m_HighlightSingleRadius, 0.1f, 10.f, "%.3f"))
+                    m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
+                
+                ImGui::TextWrapped("Highlight vertex");
+
+                if (ImGui::SliderScalarN("##Highlight coords", ImGuiDataType_S32, &m_HighlightCoords.x, 2, min, max))
+                {
+                    m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
+                }
+            }
+        }        
 
         ImGui::End();
     }
