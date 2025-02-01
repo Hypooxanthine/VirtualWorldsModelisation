@@ -78,7 +78,7 @@ void DetailsPanel::onImgui()
         ImGui::Separator();
 
         if (m_Scene->getHeightField().isValidIndex(0)
-            && ImGui::Checkbox("Enable vertex highlighting test", &m_HighlightEnabled))
+            && ImGui::Checkbox("Enable single vertex highlighting", &m_HighlightEnabled))
         {
             m_Scene->enableHighlightSingle(m_HighlightEnabled);
             if (m_HighlightEnabled)
