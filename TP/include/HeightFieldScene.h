@@ -22,6 +22,8 @@ public:
     void updateHeightField(const ScalarField::FromTextureSpecs& specs, bool shouldUpdateMesh = true);
     void updateMesh();
 
+    void highlightPoint(size_t x, size_t y, float radius = 1.f);
+
     inline vrm::ByteTextureData& getHeightMap() { return m_HeightMap; }
     inline HeightField& getHeightField() { return m_HeightField; }
     inline vrm::TransformComponent& getMeshTransform() { return *m_MeshTransform; }
