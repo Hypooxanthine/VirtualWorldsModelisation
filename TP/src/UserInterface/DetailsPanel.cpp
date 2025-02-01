@@ -71,33 +71,40 @@ void DetailsPanel::onImgui()
         if (ImGui::SliderFloat3("##Scale", &scale.x, 0.01f, 10.f, "%.3f"))
         {
             m_Scene->getMeshTransform().setScale(scale);
-            if (m_HighlightEnabled)
-                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightRadius);
+            if (m_HighlightSingleEnabled)
+                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
         }
 
         ImGui::Separator();
 
         if (m_Scene->getHeightField().isValidIndex(0)
-            && ImGui::Checkbox("Enable single vertex highlighting", &m_HighlightEnabled))
+            && ImGui::Checkbox("Enable single vertex highlighting", &m_HighlightSingleEnabled))
         {
-            m_Scene->enableHighlightSingle(m_HighlightEnabled);
-            if (m_HighlightEnabled)
-                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightRadius);
+            m_Scene->enableHighlightSingle(m_HighlightSingleEnabled);
+            if (m_HighlightSingleEnabled)
+                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
         }
 
-        if (m_HighlightEnabled)
+        if (m_HighlightSingleEnabled)
         {
             ImGui::TextWrapped("Highlight radius");
-            if (ImGui::SliderFloat("##Highlight radius", &m_HighlightRadius, 0.1f, 10.f, "%.3f"))
-                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightRadius);
+            if (ImGui::SliderFloat("##Highlight radius", &m_HighlightSingleRadius, 0.1f, 10.f, "%.3f"))
+                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
+            
+            static int min[2] = { 0, 0 };
+            static int max[2];
+            max[0] = static_cast<int>(m_Scene->getHeightField().getSizeX());
+            max[1] = static_cast<int>(m_Scene->getHeightField().getSizeY());
             
             ImGui::TextWrapped("Highlight vertex");
-            if (ImGui::SliderInt("##Highlight x", &m_HighlightCoords.x, 0, m_Scene->getHeightField().getSizeX() - 1) ||
-                ImGui::SliderInt("##Highlight y", &m_HighlightCoords.y, 0, m_Scene->getHeightField().getSizeY() - 1))
+
+            if (ImGui::SliderScalarN("##Highlight coords", ImGuiDataType_S32, &m_HighlightCoords.x, 2, min, max))
             {
-                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightRadius);
+                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
             }
         }
+
+        
 
         ImGui::End();
     }

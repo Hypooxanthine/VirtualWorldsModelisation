@@ -30,7 +30,7 @@ private:
         .zMinMax = { 0.f, 8.f }
     };
 
-    bool m_HighlightEnabled = false;
-    float m_HighlightRadius = 1.f;
+    bool m_HighlightSingleEnabled = false;
+    float m_HighlightSingleRadius = 1.f;
     glm::ivec2 m_HighlightCoords = { 0, 0 };
 };
