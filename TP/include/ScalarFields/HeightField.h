@@ -39,6 +39,12 @@ public:
     void setValue(size_t i, float value) = delete;
     inline constexpr void setHeight(size_t i, float height) { ScalarField::setValue(i, height); }
     inline constexpr void setHeight(size_t x, size_t y, float height) { ScalarField::setValue(x, y, height); }
+
+    inline constexpr glm::vec3 getLocalPosition(size_t x, size_t y) const
+    {
+        const float ps = getPointSpacing();
+        return glm::vec3(x * ps, getHeight(x, y), y * ps);
+    }
 };
 
 inline ScalarField HeightField::getAverageSlopeScalarField() const
