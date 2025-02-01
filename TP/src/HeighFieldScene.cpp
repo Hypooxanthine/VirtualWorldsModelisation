@@ -60,6 +60,17 @@ void HeightFieldScene::onEnd()
 
 void HeightFieldScene::onUpdate(float dt)
 {
+    if (m_IsAnimatingPath)
+    {
+        m_TimeSinceLastIndex += dt;
+        float timePerIndex = m_PathAnimationTime / m_Path.size();
+        if (m_TimeSinceLastIndex >= timePerIndex)
+        {
+            hightlightPath(m_Path[m_PathIndex]);
+            m_PathIndex = (m_PathIndex + 1) % m_Path.size();
+            m_TimeSinceLastIndex -= timePerIndex;
+        }
+    }
 }
 
 void HeightFieldScene::onRender()
@@ -130,4 +141,22 @@ void HeightFieldScene::startPathAnimation(const std::vector<int>& path)
     m_Path = path;
     m_PathIndex = 0;
     m_IsAnimatingPath = true;
+
+    getEntity("highlightPath").getComponent<vrm::MeshComponent>().setVisible(true);
+}
+
+void HeightFieldScene::stopPathAnimation()
+{
+    m_IsAnimatingPath = false;
+    getEntity("highlightPath").getComponent<vrm::MeshComponent>().setVisible(false);
+}
+
+void HeightFieldScene::hightlightPath(size_t index)
+{
+    glm::vec3 localPos = m_HeightField.getLocalPosition(m_HeightField.xCoord(index), m_HeightField.yCoord(index));
+    glm::vec3 worldPos = m_MeshTransform->getTransform() * glm::vec4(localPos, 1.f);
+
+    auto e = getEntity("highlightPath");
+    auto& tc = e.getComponent<vrm::TransformComponent>();
+    tc.setPosition(worldPos);
 }
