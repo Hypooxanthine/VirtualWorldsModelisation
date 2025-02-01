@@ -25,7 +25,14 @@ public:
         {
             for (int j = 0; j < 8; j++)
             {
-                m_Weights[i][j] = defaultWeight;
+                if (j % 2 == 0)
+                {
+                    m_Weights[i][j] = defaultWeight * 1.41421356237f;
+                }
+                else
+                {
+                    m_Weights[i][j] = defaultWeight;
+                }
             }
         }
 

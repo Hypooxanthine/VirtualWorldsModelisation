@@ -9,6 +9,8 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
+#include "HeightFieldScene.h"
+
 UILayer::UILayer()
     : m_Camera(0.1f, 100.f, glm::radians(90.f), 0.f, { 3.f, 20.f, 3.f }, { glm::radians(15.f), glm::radians(125.f), 0.f })
 {
@@ -144,6 +146,11 @@ void UILayer::onUpdate(float dt)
 
     lookUpValue = 0.f;
     turnRightValue = 0.f;
+
+    if (HeightFieldScene* scene = dynamic_cast<HeightFieldScene*>(&app.getGameLayer().getScene()); scene)
+    {
+        scene->onEditorUpdate(dt);
+    }
 }
 
 void UILayer::onRender()

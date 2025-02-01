@@ -16,13 +16,17 @@ public:
     void onInit() override;
     void onEnd() override;
     void onUpdate(float dt) override;
+    void onEditorUpdate(float dt);
     void onRender() override;
 
     void reloadTexture(const std::string& path);
     void updateHeightField(const ScalarField::FromTextureSpecs& specs, bool shouldUpdateMesh = true);
     void updateMesh();
 
-    void highlightPoint(size_t x, size_t y, float radius = 1.f);
+    inline float getHighlightRadius() const { return m_HighlightRadius; }
+    void setHighlightRadius(float radius);
+
+    void highlightPoint(size_t x, size_t y);
     void enableHighlightSingle(bool enable);
 
     void highlightStartPath(size_t x, size_t y);
@@ -30,6 +34,7 @@ public:
 
     void startPathAnimation(const std::vector<int>& path);
     void stopPathAnimation();
+    inline float getPathAnimationTime() const { return m_PathAnimationTime; }
     inline void setPathAnimationTime(float time) { m_PathAnimationTime = time; }
 
     inline vrm::ByteTextureData& getHeightMap() { return m_HeightMap; }
@@ -52,9 +57,10 @@ private:
     vrm::TransformComponent* m_LightTransform = nullptr;
 
     // Highlighting
+    float m_HighlightRadius = 1.f;
     bool m_IsAnimatingPath = false;
     std::vector<int> m_Path;
     size_t m_PathIndex = 0;
-    float m_PathAnimationTime = 0.f;
+    float m_PathAnimationTime = 5.f;
     float m_TimeSinceLastIndex = 0.f;
 };

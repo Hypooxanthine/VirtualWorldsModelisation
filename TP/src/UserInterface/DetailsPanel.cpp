@@ -12,6 +12,8 @@
 
 #include "ScopeProfiler.h"
 
+#include "Graphs/FieldGraph.h"
+
 DetailsPanel::DetailsPanel()
 {
 }
@@ -72,7 +74,9 @@ void DetailsPanel::onImgui()
         {
             m_Scene->getMeshTransform().setScale(scale);
             if (m_HighlightSingleEnabled)
-                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
+            {
+                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y);
+            }
         }
 
         ImGui::Separator();            
@@ -94,25 +98,43 @@ void DetailsPanel::onImgui()
             {
                 m_Scene->highlightEndPath(m_HighlightEndPathCoords.x, m_HighlightEndPathCoords.y);
             }
+            ImGui::TextWrapped("Highlight radius");
+            float radius = m_Scene->getHighlightRadius();
+            if (ImGui::SliderFloat("##Highlight radius", &radius, 0.1f, 10.f, "%.3f"))
+                m_Scene->setHighlightRadius(radius);
+
+            if (ImGui::Button("Dijkstra"))
+            {
+                PROFILE_SCOPE_VARIABLE(m_LastDijkstraTime);
+                FieldGraph g(m_Scene->getHeightField().getSizeX(), m_Scene->getHeightField().getSizeY(), 1.f);
+                auto path = g.shortestPath(m_HighlightStartPathCoords.x, m_HighlightStartPathCoords.y, m_HighlightEndPathCoords.x, m_HighlightEndPathCoords.y);
+                m_Scene->startPathAnimation(path);
+            }
+
+            if (m_LastDijkstraTime > 0.f)
+            {
+                ImGui::SameLine();
+                ImGui::TextWrapped("%.3f ms", m_LastDijkstraTime);
+            }
+
+            float animTime = m_Scene->getPathAnimationTime();
+            if (ImGui::DragFloat("Path animation time", &animTime, 0.1f, 0.1f, 10.f, "%.3f"))
+                m_Scene->setPathAnimationTime(animTime);
 
             if (ImGui::Checkbox("Enable single vertex highlighting", &m_HighlightSingleEnabled))
             {
                 m_Scene->enableHighlightSingle(m_HighlightSingleEnabled);
                 if (m_HighlightSingleEnabled)
-                    m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
+                    m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y);
             }
 
             if (m_HighlightSingleEnabled)
-            {
-                ImGui::TextWrapped("Highlight radius");
-                if (ImGui::SliderFloat("##Highlight radius", &m_HighlightSingleRadius, 0.1f, 10.f, "%.3f"))
-                    m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
-                
+            {                
                 ImGui::TextWrapped("Highlight vertex");
 
                 if (ImGui::SliderScalarN("##Highlight coords", ImGuiDataType_S32, &m_HighlightCoords.x, 2, min, max))
                 {
-                    m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightSingleRadius);
+                    m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y);
                 }
             }
         }        

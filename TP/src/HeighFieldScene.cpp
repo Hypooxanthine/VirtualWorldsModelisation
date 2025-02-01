@@ -58,17 +58,22 @@ void HeightFieldScene::onEnd()
 {
 }
 
-void HeightFieldScene::onUpdate(float dt)
+void HeightFieldScene::onUpdate(float dt) {}
+
+void HeightFieldScene::onEditorUpdate(float dt)
 {
     if (m_IsAnimatingPath)
     {
         m_TimeSinceLastIndex += dt;
-        float timePerIndex = m_PathAnimationTime / m_Path.size();
+        float timePerIndex = m_PathAnimationTime / static_cast<float>(m_Path.size());
         if (m_TimeSinceLastIndex >= timePerIndex)
         {
             hightlightPath(m_Path[m_PathIndex]);
-            m_PathIndex = (m_PathIndex + 1) % m_Path.size();
-            m_TimeSinceLastIndex -= timePerIndex;
+
+            int skip = static_cast<int>(m_TimeSinceLastIndex / timePerIndex);
+            m_PathIndex += skip;
+            m_PathIndex = m_PathIndex % m_Path.size();
+            m_TimeSinceLastIndex -= (timePerIndex * skip);
         }
     }
 }
@@ -97,7 +102,29 @@ void HeightFieldScene::updateMesh()
     VRM_LOG_INFO("Mesh updated");
 }
 
-void HeightFieldScene::highlightPoint(size_t x, size_t y, float radius)
+void HeightFieldScene::setHighlightRadius(float radius)
+{
+    m_HighlightRadius = radius;
+    glm::vec3 newRadius = { radius, radius, radius };
+
+    getEntity("highlightSingle")
+        .getComponent<vrm::TransformComponent>()
+        .setScale(newRadius);
+        
+    getEntity("highlightStartPath")
+        .getComponent<vrm::TransformComponent>()
+        .setScale(newRadius);
+
+    getEntity("highlightEndPath")
+        .getComponent<vrm::TransformComponent>()
+        .setScale(newRadius);
+
+    getEntity("highlightPath")
+        .getComponent<vrm::TransformComponent>()
+        .setScale(newRadius);
+}
+
+void HeightFieldScene::highlightPoint(size_t x, size_t y)
 {
     glm::vec3 localPos = m_HeightField.getLocalPosition(x, y);
     glm::vec3 worldPos = m_MeshTransform->getTransform() * glm::vec4(localPos, 1.f);
@@ -105,7 +132,7 @@ void HeightFieldScene::highlightPoint(size_t x, size_t y, float radius)
     auto e = getEntity("highlightSingle");
     auto& tc = e.getComponent<vrm::TransformComponent>();
     tc.setPosition(worldPos);
-    tc.setScale({radius, radius, radius});
+    tc.setScale({m_HighlightRadius, m_HighlightRadius, m_HighlightRadius});
     e.getComponent<vrm::MeshComponent>().setVisible(true);
 }
 
