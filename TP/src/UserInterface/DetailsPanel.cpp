@@ -77,8 +77,13 @@ void DetailsPanel::onImgui()
 
         ImGui::Separator();
 
-        if (ImGui::Checkbox("Enable vertex highlighting test", &m_HighlightEnabled))
-            m_Scene->enableHighlight(m_HighlightEnabled);
+        if (m_Scene->getHeightField().isValidIndex(0)
+            && ImGui::Checkbox("Enable vertex highlighting test", &m_HighlightEnabled))
+        {
+            m_Scene->enableHighlightSingle(m_HighlightEnabled);
+            if (m_HighlightEnabled)
+                m_Scene->highlightPoint(m_HighlightCoords.x, m_HighlightCoords.y, m_HighlightRadius);
+        }
 
         if (m_HighlightEnabled)
         {

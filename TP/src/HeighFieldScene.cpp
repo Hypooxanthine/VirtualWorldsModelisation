@@ -29,11 +29,23 @@ void HeightFieldScene::onInit()
             m_LightComponent->intensity = 1'000.f;
             m_LightComponent->radius = 10'000.f;
 
-    auto highlightEntity = createEntity("Highlight");
-        highlightEntity.addComponent<vrm::MeshComponent>(
+    auto highlightSingleEntity = createEntity("highlightSingle");
+        highlightSingleEntity.addComponent<vrm::MeshComponent>(
             vrm::AssetManager::Get().getAsset<vrm::MeshAsset>("Resources/Meshes/ControlPoint.obj")
         ).setVisible(false);
-        highlightEntity.getComponent<vrm::TransformComponent>().setScale({ 1.f, 1.f, 1.f });
+        highlightSingleEntity.getComponent<vrm::TransformComponent>().setScale({ 1.f, 1.f, 1.f });
+
+    auto highlightStartPathEntity = createEntity("highlightStartPath");
+        highlightStartPathEntity.addComponent<vrm::MeshComponent>(
+            vrm::AssetManager::Get().getAsset<vrm::MeshAsset>("Resources/Meshes/ControlPoint.obj")
+        ).setVisible(false);
+        highlightStartPathEntity.getComponent<vrm::TransformComponent>().setScale({ 1.f, 1.f, 1.f });
+    
+    auto highlightEndPathEntity = createEntity("highlightEndPath");
+        highlightEndPathEntity.addComponent<vrm::MeshComponent>(
+            vrm::AssetManager::Get().getAsset<vrm::MeshAsset>("Resources/Meshes/ControlPoint.obj")
+        ).setVisible(false);
+        highlightEndPathEntity.getComponent<vrm::TransformComponent>().setScale({ 1.f, 1.f, 1.f });
 }
 
 void HeightFieldScene::onEnd()
@@ -73,14 +85,14 @@ void HeightFieldScene::highlightPoint(size_t x, size_t y, float radius)
     glm::vec3 localPos = m_HeightField.getLocalPosition(x, y);
     glm::vec3 worldPos = m_MeshTransform->getTransform() * glm::vec4(localPos, 1.f);
 
-    auto e = getEntity("Highlight");
+    auto e = getEntity("highlightSingle");
     auto& tc = e.getComponent<vrm::TransformComponent>();
     tc.setPosition(worldPos);
     tc.setScale({radius, radius, radius});
     e.getComponent<vrm::MeshComponent>().setVisible(true);
 }
 
-void HeightFieldScene::enableHighlight(bool enable)
+void HeightFieldScene::enableHighlightSingle(bool enable)
 {
-    getEntity("Highlight").getComponent<vrm::MeshComponent>().setVisible(enable);
+    getEntity("highlightSingle").getComponent<vrm::MeshComponent>().setVisible(enable);
 }
