@@ -17,7 +17,9 @@
 class FieldGraph
 {
 public:
-    inline FieldGraph(int width, int height, float defaultWeight)
+
+    template <typename Fn>
+    inline FieldGraph(int width, int height, Fn f)
         : m_Width(width), m_Height(height)
     {
         m_Weights.resize(width * height);
@@ -25,14 +27,7 @@ public:
         {
             for (int j = 0; j < 8; j++)
             {
-                if (j % 2 == 0)
-                {
-                    m_Weights[i][j] = defaultWeight * 1.41421356237f;
-                }
-                else
-                {
-                    m_Weights[i][j] = defaultWeight;
-                }
+                setWeight(i, j, f(i, j));
             }
         }
 
@@ -75,6 +70,11 @@ public:
              width - 1,  width,  width + 1
         };
     }
+    
+    inline FieldGraph(int width, int height, float defaultWeight)
+        : FieldGraph(width, height, [defaultWeight](int, int) { return defaultWeight; })
+    {
+    }
 
     inline FieldGraph(int width, int height)
         : FieldGraph(width, height, 1.0f)
@@ -83,6 +83,11 @@ public:
     inline float getWeight(int x, int y, int direction) const
     {
         return m_Weights[x + y * 8][direction];
+    }
+
+    inline void setWeight(int i, int direction, float weight)
+    {
+        m_Weights[i][direction] = weight;
     }
 
     inline void setWeight(int x, int y, int direction, float weight)

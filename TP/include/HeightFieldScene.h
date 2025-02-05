@@ -61,6 +61,6 @@ private:
     bool m_IsAnimatingPath = false;
     std::vector<int> m_Path;
     size_t m_PathIndex = 0;
-    float m_PathAnimationTime = 5.f;
+    float m_PathAnimationTime = 1.f;
     float m_TimeSinceLastIndex = 0.f;
 };
