@@ -79,10 +79,10 @@ void DetailsPanel::onImgui()
             }
         }
 
-        ImGui::Separator();            
-
         if (m_Scene->getHeightField().isValidIndex(0))
         {
+            ImGui::Separator();
+
             static int min[2] = { 0, 0 };
             static int max[2];
             max[0] = static_cast<int>(m_Scene->getHeightField().getSizeX());
@@ -103,10 +103,62 @@ void DetailsPanel::onImgui()
             if (ImGui::SliderFloat("##Highlight radius", &radius, 0.1f, 10.f, "%.3f"))
                 m_Scene->setHighlightRadius(radius);
 
+            static float minImportance = -10.f;
+            static float maxImportance = 10.f;
+
+            ImGui::TextWrapped("Distance importance");
+            ImGui::SliderFloat("##Distance importance", &m_DistanceImportance, minImportance, maxImportance, "%.3f");
+
+            ImGui::TextWrapped("Height importance");
+            ImGui::SliderFloat("##Height importance", &m_HeightImportance, minImportance, maxImportance, "%.3f");
+
+            ImGui::TextWrapped("Slope importance");
+            ImGui::SliderFloat("##Slope importance", &m_SlopeImportance, minImportance, maxImportance, "%.3f");
+
+            ImGui::TextWrapped("Average slope importance");
+            ImGui::SliderFloat("##Average slope importance", &m_AverageSlopeImportance, minImportance, maxImportance, "%.3f");
+
+            ImGui::TextWrapped("Laplacian importance");
+            ImGui::SliderFloat("##Laplacian importance", &m_LaplacianImportance, minImportance, maxImportance, "%.3f");
+
+            ImGui::TextWrapped("Drainage area importance");
+            ImGui::SliderFloat("##Drainage area importance", &m_DrainageAreaImportance, minImportance, maxImportance, "%.3f");
+
+            ImGui::TextWrapped("Stream power importance");
+            ImGui::SliderFloat("##Stream power importance", &m_StreamPowerImportance, minImportance, maxImportance, "%.3f");
+
+            ImGui::TextWrapped("Wetness index importance");
+            ImGui::SliderFloat("##Wetness index importance", &m_WetnessIndexImportance, minImportance, maxImportance, "%.3f");
+
             if (ImGui::Button("Dijkstra"))
             {
                 PROFILE_SCOPE_VARIABLE(m_LastDijkstraTime);
-                FieldGraph g(m_Scene->getHeightField().getSizeX(), m_Scene->getHeightField().getSizeY(), 1.f);
+                
+                auto weightFunction = [this](int from, int to) -> float
+                {
+                    float w = 0.f;
+
+                    glm::vec3 fromPos = m_HeightField.getLocalPosition(from);
+                    glm::vec3 toPos = m_HeightField.getLocalPosition(to);
+
+                    float yDiff = toPos.y - fromPos.y;
+                    float yPlaneDist = glm::length(glm::vec2(toPos.x, toPos.z) - glm::vec2(fromPos.x, fromPos.z));
+
+                    w += m_DistanceImportance * glm::length(toPos - fromPos);
+                    w += m_HeightImportance * m_normalizedHeightField.getValue(to);
+                    w += m_SlopeImportance * yDiff / yPlaneDist;
+                    w += m_AverageSlopeImportance * m_normalizedAverageSlopeField.getValue(to);
+                    w += m_LaplacianImportance * m_normalizedLaplacianField.getValue(to);
+                    w += m_DrainageAreaImportance * m_normalizedDrainageAreaField.getValue(to);
+                    w += m_StreamPowerImportance * m_normalizedStreamPowerField.getValue(to);
+                    w += m_WetnessIndexImportance * m_normalizedWetnessIndexField.getValue(to);
+
+
+                    return w;
+                };
+
+                FieldGraph g(m_Scene->getHeightField().getSizeX(), m_Scene->getHeightField().getSizeY(), weightFunction);
+
                 auto path = g.shortestPath(m_HighlightStartPathCoords.x, m_HighlightStartPathCoords.y, m_HighlightEndPathCoords.x, m_HighlightEndPathCoords.y);
                 m_Scene->startPathAnimation(path);
             }
@@ -117,8 +169,9 @@ void DetailsPanel::onImgui()
                 ImGui::TextWrapped("%.3f ms", m_LastDijkstraTime);
             }
 
+            ImGui::TextWrapped("Path animation time");
             float animTime = m_Scene->getPathAnimationTime();
-            if (ImGui::DragFloat("Path animation time", &animTime, 0.1f, 0.1f, 10.f, "%.3f"))
+            if (ImGui::DragFloat("##Path animation time", &animTime, 0.1f, 0.1f, 10.f, "%.3f"))
                 m_Scene->setPathAnimationTime(animTime);
 
             if (ImGui::Checkbox("Enable single vertex highlighting", &m_HighlightSingleEnabled))
@@ -179,6 +232,7 @@ void DetailsPanel::updateTextures()
     {
         PROFILE_SCOPE_VARIABLE(t);
         map = vrm::ByteTextureData(m_Scene->getHeightMap());
+        m_HeightField = m_Scene->getHeightField();
     }
     m_TextureExplorer.addOrUpdateTexture(
         0,
@@ -189,7 +243,8 @@ void DetailsPanel::updateTextures()
 
     {
         PROFILE_SCOPE_VARIABLE(t);
-        map = m_Scene->getHeightField().getSlopeScalarField().toTexture();
+        m_SlopeField = m_Scene->getHeightField().getSlopeScalarField();
+        map = m_SlopeField.toTexture();
     }
     m_TextureExplorer.addOrUpdateTexture(
         1,
@@ -200,7 +255,8 @@ void DetailsPanel::updateTextures()
 
     {
         PROFILE_SCOPE_VARIABLE(t);
-        map = m_Scene->getHeightField().getAverageSlopeScalarField().toTexture();
+        m_AverageSlopeField = m_Scene->getHeightField().getAverageSlopeScalarField();
+        map = m_AverageSlopeField.toTexture();
     }
     m_TextureExplorer.addOrUpdateTexture(
         2,
@@ -211,7 +267,8 @@ void DetailsPanel::updateTextures()
 
     {
         PROFILE_SCOPE_VARIABLE(t);
-        map = m_Scene->getHeightField().getLaplacianScalarField().toTexture();
+        m_LaplacianField = m_Scene->getHeightField().getLaplacianScalarField();
+        map = m_LaplacianField.toTexture();
     }
     m_TextureExplorer.addOrUpdateTexture(
         3,
@@ -222,7 +279,8 @@ void DetailsPanel::updateTextures()
 
     {
         PROFILE_SCOPE_VARIABLE(t);
-        map = m_Scene->getHeightField().getDrainageAreaScalarField(6.f).toTexture();
+        m_DrainageAreaField = m_Scene->getHeightField().getDrainageAreaScalarField(6.f);
+        map = m_DrainageAreaField.toTexture();
     }
     m_TextureExplorer.addOrUpdateTexture(
         4,
@@ -233,7 +291,8 @@ void DetailsPanel::updateTextures()
 
     {
         PROFILE_SCOPE_VARIABLE(t);
-        map = m_Scene->getHeightField().getStreamPowerScalarField().toTexture();
+        m_StreamPowerField = m_Scene->getHeightField().getStreamPowerScalarField();
+        map = m_StreamPowerField.toTexture();
     }
     m_TextureExplorer.addOrUpdateTexture(
         5,
@@ -244,7 +303,8 @@ void DetailsPanel::updateTextures()
 
     {
         PROFILE_SCOPE_VARIABLE(t);
-        map = m_Scene->getHeightField().getWetnessIndexScalarField().toTexture();
+        m_WetnessIndexField = m_Scene->getHeightField().getWetnessIndexScalarField();
+        map = m_WetnessIndexField.toTexture();
     }
     m_TextureExplorer.addOrUpdateTexture(
         6,
@@ -252,6 +312,14 @@ void DetailsPanel::updateTextures()
         std::move(map),
         t
     );
+
+    m_normalizedHeightField = m_HeightField.normalized();
+    m_normalizedSlopeField = m_SlopeField.normalized();
+    m_normalizedAverageSlopeField = m_AverageSlopeField.normalized();
+    m_normalizedLaplacianField = m_LaplacianField.normalized();
+    m_normalizedDrainageAreaField = m_DrainageAreaField.normalized();
+    m_normalizedStreamPowerField = m_StreamPowerField.normalized();
+    m_normalizedWetnessIndexField = m_WetnessIndexField.normalized();
 }
 
 void DetailsPanel::updateHeightField(bool adjustMinMax)

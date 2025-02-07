@@ -45,6 +45,11 @@ public:
         const float ps = getPointSpacing();
         return glm::vec3(x * ps, getHeight(x, y), y * ps);
     }
+
+    inline constexpr glm::vec3 getLocalPosition(size_t i) const
+    {
+        return getLocalPosition(xCoord(i), yCoord(i));
+    }
 };
 
 inline ScalarField HeightField::getAverageSlopeScalarField() const

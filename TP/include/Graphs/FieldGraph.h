@@ -20,14 +20,20 @@ public:
 
     template <typename Fn>
     inline FieldGraph(int width, int height, Fn f)
-        : m_Width(width), m_Height(height)
+        : m_Width(width), m_Height(height), m_Size(width * height)
     {
+        di = { 
+            -width - 1, -width, -width + 1,
+            -1,                  1,
+             width - 1,  width,  width + 1
+        };
+
         m_Weights.resize(width * height);
         for (int i = 0; i < width * height; i++)
         {
             for (int j = 0; j < 8; j++)
             {
-                setWeight(i, j, f(i, j));
+                setWeight(i, j, f(i, i + di[j]));
             }
         }
 
@@ -63,12 +69,6 @@ public:
                 m_Weights[(i + 1) * width - 1][2 + j] = std::numeric_limits<float>::infinity();
             }
         }
-
-        di = { 
-            -width - 1, -width, -width + 1,
-            -1,                  1,
-             width - 1,  width,  width + 1
-        };
     }
     
     inline FieldGraph(int width, int height, float defaultWeight)
@@ -97,6 +97,19 @@ public:
 
     inline int getNeighbour(int from, int direction) const
     {
+        if (from < 0 || from >= m_Size)
+        {
+            return -1;
+        }
+
+        int x = from % m_Width;
+        int y = from / m_Width;
+
+        if (x < 0 || x >= m_Width || y < 0 || y >= m_Height)
+        {
+            return -1;
+        }
+
         int n = from + di[direction];
         if (n < 0 || n >= m_Width * m_Height)
         {
@@ -110,7 +123,7 @@ public:
 
 private:
     std::vector<std::array<float, 8>> m_Weights;
-    int m_Width, m_Height;
+    int m_Width, m_Height, m_Size;
 
     std::array<int, 8> di;
 };

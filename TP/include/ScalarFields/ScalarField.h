@@ -31,6 +31,8 @@ public:
         : m_Width(width), m_Height(height), m_Data(width * height, defaultValues)
     {}
 
+    inline ScalarField& operator=(const ScalarField& other) = default;
+
     void setFromTexture(const vrm::ByteTextureData& texture, const FromTextureSpecs& specs);
     vrm::ByteTextureData toTexture(float min, float max) const;
     vrm::ByteTextureData toTexture() const { return toTexture(getMin(), getMax()); }
@@ -65,6 +67,22 @@ public:
 
     inline constexpr void setValue(size_t i, float value) { m_Data[i] = value; }
     inline constexpr void setValue(size_t x, size_t y, float value) { setValue(index(x, y), value); }
+
+    inline constexpr ScalarField normalized() const
+    {
+        auto min = getMin();
+        auto max = getMax();
+        auto range = max - min;
+
+        ScalarField normalized(m_Width, m_Height);
+
+        for (size_t i = 0; i < m_Data.size(); ++i)
+        {
+            normalized.setValue(i, (m_Data[i] - min) / range);
+        }
+
+        return normalized;
+    }
 
 private:
     size_t m_Width = 0;

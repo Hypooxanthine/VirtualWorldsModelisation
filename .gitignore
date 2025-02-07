@@ -65,3 +65,6 @@ docs/*
 !dependencies/**
 !Resources/**
 !TP/Resources/**
+
+TP/rapport.md
+TP/rapport.pdf
