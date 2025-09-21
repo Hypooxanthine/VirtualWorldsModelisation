@@ -4,7 +4,9 @@
 
 University assignment for the "Modélisation de mondes virtuels" course at Université Claude Bernard, Lyon 1.
 
-## Screenshots
+## Demo video
+
+https://youtu.be/TZ9dMdfQn9E
 
 ## Building project
 
